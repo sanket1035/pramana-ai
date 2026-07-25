@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Sparkles, ArrowRight, BookOpen, Cpu, Globe, Scale } from 'lucide-react';
+import { ArrowRight, Sliders, Cpu, Globe, Scale, BookOpen } from 'lucide-react';
 import { createResearchSession } from '../services/api.js';
 
 export const NewResearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
+  const [depth, setDepth] = useState<'SURFACE' | 'DEEP'>('SURFACE');
+  const [domain, setDomain] = useState<'ACADEMIC' | 'JOURNALISM'>('ACADEMIC');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -47,68 +49,119 @@ export const NewResearchPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 pt-4 pb-20">
-      {/* Page Title */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-950/50 border border-purple-800/50 text-xs font-mono text-purple-300">
-          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span>Perplexity × NotebookLM Synthesis Engine</span>
-        </div>
-        <h1 className="text-2xl md:text-3xl font-heading font-bold text-white">
-          Initiate Verified Multi-Agent Research
+    <div className="max-w-[720px] mx-auto p-4 md:p-8 space-y-10 pb-20">
+      {/* Header Section */}
+      <section className="text-center space-y-3">
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#e8e1dd]">
+          Initiate Analysis
         </h1>
-        <p className="text-xs text-zinc-400 max-w-md mx-auto">
-          Enter any research question or statement. 6 specialized AI agents will extract, verify, score confidence, and cite primary sources.
+        <p className="font-serif text-base text-[#dbc2b0] max-w-xl mx-auto leading-relaxed">
+          Define your research claim or complex query. Our multi-agent system will cross-reference academic, journalistic, and real-time data sources.
         </p>
-      </div>
+      </section>
 
-      {/* Main Input Box */}
-      <form onSubmit={handleSubmit} className="p-4 rounded-2xl glass-panel glow-border space-y-4 shadow-2xl">
+      {/* Primary Input Canvas */}
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="relative">
           <textarea
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ask a complex research question (e.g., 'What are the verified impacts of quantum computing on RSA encryption?')..."
+            placeholder="State your research objective or hypothesis..."
             rows={4}
-            className="w-full bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none resize-none"
+            className="w-full bg-[#221f1c] border border-[#554336] focus:border-[#ffb77d] font-serif text-xl text-[#e8e1dd] p-6 rounded placeholder-[#dbc2b0]/30 outline-none resize-none transition-all"
             autoFocus
           />
+          <div className="absolute bottom-4 right-4 font-mono text-[10px] text-[#dbc2b0]/40">
+            ⌘ + ENTER
+          </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-[#27272A] pt-3 text-xs">
-          <div className="flex items-center space-x-2 text-zinc-400 font-mono text-[11px]">
-            <ShieldCheck className="w-4 h-4 text-purple-400" />
-            <span>Gemini 2.5 Flash Pipeline</span>
+        {/* Research Parameters Collapsible */}
+        <div className="bg-[#1e1b19] border border-[#554336] rounded p-6 space-y-6">
+          <div className="flex items-center gap-2 font-mono text-xs text-[#ffb77d] uppercase tracking-widest font-semibold">
+            <Sliders className="w-4 h-4 text-[#ffb77d]" />
+            <span>RESEARCH PARAMETERS</span>
           </div>
 
-          <button
-            type="submit"
-            disabled={!query.trim() || loading}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 text-white font-semibold text-xs transition-all shadow-md flex items-center space-x-2 cursor-pointer"
-          >
-            <span>{loading ? 'Initiating Agents...' : 'Run Pipeline'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-[#554336]/40">
+            {/* Context Depth */}
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] text-[#dbc2b0] uppercase tracking-widest block">Context Depth</label>
+              <div className="flex gap-1 p-1 bg-[#2d2927] rounded">
+                <button
+                  type="button"
+                  onClick={() => setDepth('SURFACE')}
+                  className={`flex-1 py-1.5 px-3 font-mono text-xs font-bold rounded transition-colors ${
+                    depth === 'SURFACE' ? 'bg-[#ffb77d] text-[#4d2600]' : 'text-[#dbc2b0] hover:text-[#e8e1dd]'
+                  }`}
+                >
+                  SURFACE
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDepth('DEEP')}
+                  className={`flex-1 py-1.5 px-3 font-mono text-xs font-bold rounded transition-colors ${
+                    depth === 'DEEP' ? 'bg-[#ffb77d] text-[#4d2600]' : 'text-[#dbc2b0] hover:text-[#e8e1dd]'
+                  }`}
+                >
+                  DEEP
+                </button>
+              </div>
+            </div>
+
+            {/* Domain Focus */}
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] text-[#dbc2b0] uppercase tracking-widest block">Domain Focus</label>
+              <div className="flex gap-2">
+                <span
+                  onClick={() => setDomain('ACADEMIC')}
+                  className={`px-3 py-1.5 text-[10px] font-mono rounded cursor-pointer border transition-colors ${
+                    domain === 'ACADEMIC' ? 'bg-[#ffb77d]/20 text-[#ffb77d] border-[#ffb77d]/40' : 'bg-[#151310] text-[#dbc2b0] border-[#554336]'
+                  }`}
+                >
+                  ACADEMIC
+                </span>
+                <span
+                  onClick={() => setDomain('JOURNALISM')}
+                  className={`px-3 py-1.5 text-[10px] font-mono rounded cursor-pointer border transition-colors ${
+                    domain === 'JOURNALISM' ? 'bg-[#ffb77d]/20 text-[#ffb77d] border-[#ffb77d]/40' : 'bg-[#151310] text-[#dbc2b0] border-[#554336]'
+                  }`}
+                >
+                  JOURNALISM
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Submit Action */}
+        <button
+          type="submit"
+          disabled={!query.trim() || loading}
+          className="w-full bg-[#ffb77d] hover:brightness-110 disabled:opacity-50 text-[#4d2600] font-mono font-bold text-xs py-4 rounded flex items-center justify-center gap-2 transition-all cursor-pointer uppercase tracking-wider"
+        >
+          <span>{loading ? 'Initiating Pipeline...' : 'START MULTI-AGENT VERIFICATION'}</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </form>
 
-      {/* Topic Templates */}
-      <div className="space-y-3">
-        <h2 className="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">
-          Suggested Research Templates
+      {/* Suggested Templates */}
+      <div className="space-y-3 pt-4">
+        <h2 className="font-mono text-xs text-[#dbc2b0] uppercase tracking-widest font-semibold">
+          Suggested Research Objectives
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {promptTemplates.map((t, i) => (
             <button
               key={i}
               onClick={() => setQuery(t.query)}
-              className="p-3.5 rounded-xl bg-[#111113] border border-[#27272A] hover:border-purple-500/40 text-left transition-all group cursor-pointer"
+              className="p-4 rounded bg-[#221f1c] border border-[#554336] hover:border-[#ffb77d] text-left transition-all group cursor-pointer space-y-1"
             >
-              <div className="flex items-center space-x-2.5 text-xs font-semibold text-purple-300 mb-1">
-                <t.icon className="w-4 h-4 text-purple-400" />
+              <div className="flex items-center space-x-2 text-xs font-semibold text-[#ffb77d]">
+                <t.icon className="w-4 h-4 text-[#ffb77d]" />
                 <span>{t.title}</span>
               </div>
-              <p className="text-[11px] text-zinc-400 line-clamp-2 font-sans group-hover:text-zinc-200">
+              <p className="text-xs text-[#dbc2b0]/70 line-clamp-2 font-sans">
                 "{t.query}"
               </p>
             </button>
