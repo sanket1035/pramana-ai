@@ -45,28 +45,28 @@ code, pre, .font-mono {
   font-family: 'Geist Mono', monospace;
 }
 
-/* Theme Utilities */
-.bg-theme-main { background-color: var(--bg-main); }
-.bg-theme-sidebar { background-color: var(--bg-sidebar); }
-.bg-theme-surface { background-color: var(--bg-surface); }
-.bg-theme-surface-high { background-color: var(--bg-surface-high); }
-.bg-theme-surface-highest { background-color: var(--bg-surface-highest); }
-.text-theme-main { color: var(--text-main); }
-.text-theme-muted { color: var(--text-muted); }
-.text-theme-accent { color: var(--text-accent); }
-.border-theme-main { border-color: var(--border-main); }
-.border-theme-hover { border-color: var(--border-hover); }
-.bg-theme-accent { background-color: var(--accent-primary); }
-
-/* Global scrollbar */
+/* Custom Visible Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-main);
-  border-radius: 3px;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
 }

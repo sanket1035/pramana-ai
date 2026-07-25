@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Sliders, Cpu, Globe, Scale, BookOpen } from 'lucide-react';
+import { ArrowRight, Sliders, Cpu, Globe, Scale, BookOpen, Sparkles, RefreshCw } from 'lucide-react';
 import { createResearchSession } from '../services/api.js';
 
 export const NewResearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [depth, setDepth] = useState<'SURFACE' | 'DEEP'>('SURFACE');
+  const [outputFormat, setOutputFormat] = useState<'EXECUTIVE SUMMARY' | 'FULL DOSSIER' | 'DATA VISUALIZATION'>('EXECUTIVE SUMMARY');
   const [domain, setDomain] = useState<'ACADEMIC' | 'JOURNALISM'>('ACADEMIC');
   const [loading, setLoading] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
   const navigate = useNavigate();
 
   const promptTemplates = [
@@ -32,6 +34,21 @@ export const NewResearchPage: React.FC = () => {
       query: 'What are the peer-reviewed clinical trial outcomes of Casgevy cell therapy for sickle cell disease?'
     }
   ];
+
+  const handleGenerateAiPrompt = () => {
+    setAiGenerating(true);
+    const aiQueries = [
+      "Analyze the peer-reviewed consensus on room-temperature superconductor claims in LK-99 replications.",
+      "Fact-check the empirical efficiency benchmarks of solid-state sodium-ion battery EV architectures.",
+      "What are the verified regulatory compliance requirements for autonomous surgical robotics under FDA guidelines?",
+      "Deconstruct the post-quantum lattice-based encryption security proofs approved by NIST 2024 standards."
+    ];
+    const randomIndex = Math.floor(Math.random() * aiQueries.length);
+    setTimeout(() => {
+      setQuery(aiQueries[randomIndex]);
+      setAiGenerating(false);
+    }, 400);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,19 +88,29 @@ export const NewResearchPage: React.FC = () => {
             className="w-full bg-[var(--bg-surface)] border border-[var(--border-main)] focus:border-[var(--text-accent)] font-serif text-xl text-[var(--text-main)] p-6 rounded placeholder-[var(--text-muted)]/40 outline-none resize-none transition-all"
             autoFocus
           />
-          <div className="absolute bottom-4 right-4 font-mono text-[10px] text-[var(--text-muted)]/40">
-            ⌘ + ENTER
+          <div className="absolute bottom-4 right-4 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleGenerateAiPrompt}
+              className="font-mono text-[10px] text-[var(--text-accent)] hover:underline flex items-center gap-1 bg-[var(--text-accent)]/10 px-2 py-1 rounded border border-[var(--text-accent)]/20 cursor-pointer"
+            >
+              <Sparkles className="w-3 h-3 text-[var(--text-accent)]" />
+              <span>{aiGenerating ? 'Generating Prompt...' : 'Generate AI Prompt'}</span>
+            </button>
+            <span className="font-mono text-[10px] text-[var(--text-muted)]/40">⌘ + ENTER</span>
           </div>
         </div>
 
-        {/* Research Parameters Collapsible */}
+        {/* Research Parameters Box (Stitch Design) */}
         <div className="bg-[var(--bg-sidebar)] border border-[var(--border-main)] rounded p-6 space-y-6">
-          <div className="flex items-center gap-2 font-mono text-xs text-[var(--text-accent)] uppercase tracking-widest font-semibold">
-            <Sliders className="w-4 h-4 text-[var(--text-accent)]" />
-            <span>RESEARCH PARAMETERS</span>
+          <div className="flex items-center justify-between font-mono text-xs text-[var(--text-accent)] uppercase tracking-widest font-semibold">
+            <div className="flex items-center gap-2">
+              <Sliders className="w-4 h-4 text-[var(--text-accent)]" />
+              <span>RESEARCH PARAMETERS</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-[var(--border-main)]/40">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 border-t border-[var(--border-main)]/40">
             {/* Context Depth */}
             <div className="space-y-2">
               <label className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-widest block">Context Depth</label>
@@ -91,7 +118,7 @@ export const NewResearchPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setDepth('SURFACE')}
-                  className={`flex-1 py-1.5 px-3 font-mono text-xs font-bold rounded transition-colors cursor-pointer ${
+                  className={`flex-1 py-1.5 px-2 font-mono text-[11px] font-bold rounded transition-colors cursor-pointer ${
                     depth === 'SURFACE' ? 'bg-[var(--accent-primary)] text-[var(--text-accent-contrast)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
@@ -100,13 +127,27 @@ export const NewResearchPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setDepth('DEEP')}
-                  className={`flex-1 py-1.5 px-3 font-mono text-xs font-bold rounded transition-colors cursor-pointer ${
+                  className={`flex-1 py-1.5 px-2 font-mono text-[11px] font-bold rounded transition-colors cursor-pointer ${
                     depth === 'DEEP' ? 'bg-[var(--accent-primary)] text-[var(--text-accent-contrast)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
                   DEEP
                 </button>
               </div>
+            </div>
+
+            {/* Output Format */}
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-widest block">Output Format</label>
+              <select
+                value={outputFormat}
+                onChange={(e) => setOutputFormat(e.target.value as any)}
+                className="w-full bg-[var(--bg-surface-high)] border border-[var(--border-main)] text-[var(--text-main)] font-mono text-[11px] py-2 px-2 rounded outline-none cursor-pointer"
+              >
+                <option value="EXECUTIVE SUMMARY">EXECUTIVE SUMMARY</option>
+                <option value="FULL DOSSIER">FULL DOSSIER</option>
+                <option value="DATA VISUALIZATION">DATA VISUALIZATION</option>
+              </select>
             </div>
 
             {/* Domain Focus */}
@@ -116,7 +157,7 @@ export const NewResearchPage: React.FC = () => {
                 <span
                   onClick={() => setDomain('ACADEMIC')}
                   className={`px-3 py-1.5 text-[10px] font-mono rounded cursor-pointer border transition-colors ${
-                    domain === 'ACADEMIC' ? 'bg-[var(--text-accent)]/20 text-[var(--text-accent)] border-[var(--text-accent)]/40' : 'bg-[var(--bg-main)] text-[var(--text-muted)] border-[var(--border-main)]'
+                    domain === 'ACADEMIC' ? 'bg-[var(--text-accent)]/20 text-[var(--text-accent)] border-[var(--text-accent)]/40 font-bold' : 'bg-[var(--bg-main)] text-[var(--text-muted)] border-[var(--border-main)]'
                   }`}
                 >
                   ACADEMIC
@@ -124,7 +165,7 @@ export const NewResearchPage: React.FC = () => {
                 <span
                   onClick={() => setDomain('JOURNALISM')}
                   className={`px-3 py-1.5 text-[10px] font-mono rounded cursor-pointer border transition-colors ${
-                    domain === 'JOURNALISM' ? 'bg-[var(--text-accent)]/20 text-[var(--text-accent)] border-[var(--text-accent)]/40' : 'bg-[var(--bg-main)] text-[var(--text-muted)] border-[var(--border-main)]'
+                    domain === 'JOURNALISM' ? 'bg-[var(--text-accent)]/20 text-[var(--text-accent)] border-[var(--text-accent)]/40 font-bold' : 'bg-[var(--bg-main)] text-[var(--text-muted)] border-[var(--border-main)]'
                   }`}
                 >
                   JOURNALISM
@@ -147,8 +188,11 @@ export const NewResearchPage: React.FC = () => {
 
       {/* Suggested Templates */}
       <div className="space-y-3 pt-4">
-        <h2 className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest font-semibold">
-          Suggested Research Objectives
+        <h2 className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest font-semibold flex items-center justify-between">
+          <span>SUGGESTED RESEARCH OBJECTIVES</span>
+          <button onClick={handleGenerateAiPrompt} className="text-[var(--text-accent)] hover:underline flex items-center gap-1 cursor-pointer">
+            <RefreshCw className="w-3 h-3" /> Refresh AI Suggestions
+          </button>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {promptTemplates.map((t, i) => (
