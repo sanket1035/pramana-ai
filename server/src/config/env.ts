@@ -7,8 +7,8 @@ dotenv.config();
 
 export const ENV = {
   PORT: process.env.PORT || 5000,
-  GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AQ.Ab8RN6LDM56Ib2_OvkbSVkXwXWfhgTA6XumioXlVOBfugUfrQQ',
-  STITCH_API_KEY: process.env.STITCH_API_KEY || 'AQ.Ab8RN6Jm57_auxpaTUXUPcnjk3S0nJrfQMZ1v4ZqBr_VX2DFgQ',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+  STITCH_API_KEY: process.env.STITCH_API_KEY || '',
   SUPABASE_URL: process.env.SUPABASE_URL || '',
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
