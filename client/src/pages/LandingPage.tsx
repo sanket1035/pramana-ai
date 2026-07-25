@@ -1,99 +1,112 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, CheckCircle2, FileText, Quote, Search, Bot } from 'lucide-react';
+import { ArrowRight, Search, CheckSquare, AlertTriangle, BarChart3, History, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-[1200px] mx-auto p-4 md:p-8 space-y-20 pb-20">
-      {/* Hero Section */}
-      <section className="text-center pt-10 md:pt-16 max-w-4xl mx-auto space-y-6">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded bg-[#ffb77d]/10 border border-[#ffb77d]/30 font-mono text-xs text-[#ffb77d] uppercase tracking-wider">
-          <span>Multi-Agent Research OS v1.0</span>
-        </div>
-
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold text-[#e8e1dd] leading-tight tracking-tight">
-          Absolute Clarity Through <br />
-          <span className="text-[#ffb77d]">Multi-Agent Verification</span>
-        </h1>
-
-        <p className="font-sans text-base text-[#dbc2b0] max-w-2xl mx-auto leading-relaxed">
-          A high-performance operating system for multi-agent synthesis and fact verification. Every claim is deconstructed, cross-checked against peer-reviewed sources, and scored with transparent confidence rationale.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <button
-            onClick={() => navigate('/research/new')}
-            className="w-full sm:w-auto bg-[#ffb77d] hover:brightness-110 text-[#4d2600] font-mono font-bold text-xs px-8 py-4 rounded flex items-center justify-center gap-2 transition-all cursor-pointer uppercase tracking-wider"
-          >
-            <span>Launch Research Pipeline</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="w-full sm:w-auto bg-[#221f1c] hover:bg-[#2d2927] text-[#e8e1dd] font-sans font-medium text-xs px-7 py-4 rounded border border-[#554336] transition-all cursor-pointer"
-          >
-            Explore Vault Dashboard
-          </button>
-        </div>
-      </section>
-
-      {/* Hero Interactive Preview */}
-      <section className="bg-[#221f1c] border border-[#554336] p-6 md:p-8 rounded max-w-4xl mx-auto space-y-4">
-        <div className="flex items-center justify-between border-b border-[#554336] pb-4">
-          <span className="font-serif font-bold text-lg text-[#e8e1dd]">Quantum Computing & Cryptography Verification</span>
-          <span className="font-mono text-xs text-[#ffb77d] bg-[#ffb77d]/10 px-2.5 py-1 rounded border border-[#ffb77d]/30">
-            96% Confidence Rating
+    <div className="min-h-screen bg-[#151310] text-[#e8e1dd] font-sans selection:bg-[#ffb77d] selection:text-[#4d2600]">
+      {/* Landing Header Bar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#151310]/80 backdrop-blur-md border-b border-[#554336] h-16 px-6 flex items-center justify-between">
+        <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>
+          <span className="font-serif text-2xl font-bold text-[#e8e1dd]">Pramāṇa</span>
+          <span className="font-mono text-[10px] text-[#ffb77d] bg-[#ffb77d]/10 px-2 py-0.5 rounded border border-[#ffb77d]/20 uppercase">
+            AI Research OS
           </span>
         </div>
 
-        <div className="space-y-3 font-sans text-sm">
-          <div className="p-4 bg-[#151310] border border-[#554336] rounded space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-[#e8e1dd]">[Verified Claim] Shor's algorithm factors RSA-2048 in polynomial time.</span>
-              <span className="font-mono text-xs text-[#ffb77d]">Score: 98%</span>
-            </div>
-            <p className="text-xs text-[#dbc2b0]/70 font-mono">Source: arXiv:quant-ph/9508027 — IEEE Quantum Roadmap</p>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => navigate('/login')}
+            className="font-mono text-xs text-[#dbc2b0] hover:text-[#e8e1dd] transition-colors"
+          >
+            SIGN IN
+          </button>
+          <button
+            onClick={() => navigate('/login')}
+            className="bg-[#ffb77d] hover:brightness-110 text-[#4d2600] font-mono font-bold text-xs px-5 py-2 rounded transition-all cursor-pointer uppercase tracking-wider"
+          >
+            INITIATE SESSION
+          </button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="pt-16">
+        <section className="relative min-h-[750px] flex flex-col items-center justify-center text-center px-6 space-y-6 max-w-4xl mx-auto pt-16 pb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#221f1c] border border-[#554336] rounded-full text-xs font-mono text-[#ffb77d]">
+            <span className="w-2 h-2 bg-[#ffb77d] rounded-full animate-pulse" />
+            <span>VERIFICATION PROTOCOL v4.2 ACTIVE</span>
           </div>
 
-          <div className="p-4 bg-[#151310] border border-[#554336] rounded space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-[#e8e1dd]">[Verified Claim] NIST finalized ML-KEM and ML-DSA PQC standards in 2024.</span>
-              <span className="font-mono text-xs text-[#ffb77d]">Score: 96%</span>
-            </div>
-            <p className="text-xs text-[#dbc2b0]/70 font-mono">Source: NIST FIPS 203 & 204 Standards Publication</p>
+          <h1 className="font-serif text-4xl sm:text-6xl md:text-[70px] md:leading-[78px] font-bold text-[#e8e1dd]">
+            The Research Operating System for the Truth.
+          </h1>
+
+          <p className="font-serif text-base sm:text-lg text-[#dbc2b0] max-w-2xl mx-auto leading-relaxed">
+            Autonomous multi-agent verification for analysts, journalists, and researchers who demand absolute accuracy in a world of algorithmic noise.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+            <button
+              onClick={() => navigate('/login')}
+              className="bg-[#ffb77d] hover:brightness-110 text-[#4d2600] font-mono font-bold text-xs px-8 py-4 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer uppercase tracking-widest shadow-xl shadow-[#ffb77d]/10"
+            >
+              <span>INITIATE SESSION</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="border border-[#554336] text-[#e8e1dd] font-mono text-xs px-8 py-4 rounded-full hover:bg-[#2d2927] transition-all cursor-pointer uppercase tracking-widest"
+            >
+              ENTER ANONYMOUSLY
+            </button>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Feature Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-        <div className="bg-[#1e1b19] border border-[#554336] p-6 rounded space-y-3">
-          <Bot className="w-6 h-6 text-[#ffb77d]" />
-          <h3 className="font-serif font-bold text-lg text-[#e8e1dd]">6-Agent Pipeline</h3>
-          <p className="font-sans text-xs text-[#dbc2b0] leading-relaxed">
-            Research, Claim Extraction, Fact Verification, Contradiction Detection, Confidence Engine, and Report Generator.
-          </p>
-        </div>
+        {/* Multi-Agent Pipeline Diagram */}
+        <section className="py-20 border-y border-[#554336] bg-[#1e1b19]">
+          <div className="max-w-[1200px] mx-auto px-6 space-y-12">
+            <div className="text-center space-y-2">
+              <h2 className="font-serif text-3xl font-bold text-[#e8e1dd]">The Multi-Agent Pipeline</h2>
+              <p className="font-mono text-xs text-[#ffb77d] tracking-widest uppercase">SERIAL CROSS-EXAMINATION ARCHITECTURE</p>
+            </div>
 
-        <div className="bg-[#1e1b19] border border-[#554336] p-6 rounded space-y-3">
-          <ShieldCheck className="w-6 h-6 text-[#ffb77d]" />
-          <h3 className="font-serif font-bold text-lg text-[#e8e1dd]">0-100% Rationale</h3>
-          <p className="font-sans text-xs text-[#dbc2b0] leading-relaxed">
-            Mathematical confidence scoring based on source authority, evidence overlap, and logical consistency.
-          </p>
-        </div>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-center">
+              <div className="p-6 bg-[#221f1c] border border-[#554336] rounded space-y-3">
+                <Search className="w-8 h-8 text-[#ffb77d] mx-auto" />
+                <h3 className="font-mono text-xs font-bold text-[#e8e1dd]">1. RESEARCH</h3>
+                <p className="text-xs text-[#dbc2b0]/70">Deep crawling of arXiv, IEEE, NIST & real-time sources.</p>
+              </div>
 
-        <div className="bg-[#1e1b19] border border-[#554336] p-6 rounded space-y-3">
-          <Quote className="w-6 h-6 text-[#ffb77d]" />
-          <h3 className="font-serif font-bold text-lg text-[#e8e1dd]">Academic Citations</h3>
-          <p className="font-sans text-xs text-[#dbc2b0] leading-relaxed">
-            Direct excerpts and footnote links from arXiv, IEEE, NIST, and peer-reviewed journals.
-          </p>
-        </div>
-      </section>
+              <div className="p-6 bg-[#221f1c] border border-[#554336] rounded space-y-3">
+                <CheckSquare className="w-8 h-8 text-[#ffb77d] mx-auto" />
+                <h3 className="font-mono text-xs font-bold text-[#e8e1dd]">2. VERIFICATION</h3>
+                <p className="text-xs text-[#dbc2b0]/70">Triple-blind cross-referencing against primary docs.</p>
+              </div>
+
+              <div className="p-6 bg-[#221f1c] border border-[#554336] rounded space-y-3">
+                <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
+                <h3 className="font-mono text-xs font-bold text-[#e8e1dd]">3. CONTRADICTION</h3>
+                <p className="text-xs text-[#dbc2b0]/70">Active pursuit of counter-evidence to stress-test claims.</p>
+              </div>
+
+              <div className="p-6 bg-[#221f1c] border border-[#554336] rounded space-y-3">
+                <BarChart3 className="w-8 h-8 text-[#ffb77d] mx-auto" />
+                <h3 className="font-mono text-xs font-bold text-[#e8e1dd]">4. CONFIDENCE</h3>
+                <p className="text-xs text-[#dbc2b0]/70">Probabilistic 0-100% scoring based on evidence density.</p>
+              </div>
+
+              <div className="p-6 bg-[#221f1c] border border-[#554336] rounded space-y-3">
+                <History className="w-8 h-8 text-[#ffb77d] mx-auto" />
+                <h3 className="font-mono text-xs font-bold text-[#e8e1dd]">5. CITATION</h3>
+                <p className="text-xs text-[#dbc2b0]/70">Granular attribution linked to the exact point of origin.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };

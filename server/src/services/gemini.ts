@@ -7,58 +7,57 @@ export async function callGeminiAPI(prompt: string, systemInstruction?: string):
     throw new Error('GEMINI_API_KEY is not configured');
   }
 
-  // Use Gemini 2.5 Flash API endpoint
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  // Try gemini-2.0-flash first, then gemini-1.5-flash
+  const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
 
-  const payload: any = {
-    contents: [
-      {
-        parts: [
-          { text: prompt }
-        ]
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const payload: any = {
+      contents: [
+        {
+          parts: [{ text: prompt }]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.2,
+        topP: 0.95,
+        maxOutputTokens: 2048,
       }
-    ],
-    generationConfig: {
-      temperature: 0.2,
-      topP: 0.95,
-      maxOutputTokens: 2048,
-    }
-  };
-
-  if (systemInstruction) {
-    payload.systemInstruction = {
-      parts: [{ text: systemInstruction }]
     };
-  }
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.warn(`Gemini API HTTP Error (${response.status}): ${errorText}`);
-      throw new Error(`Gemini API Error: ${response.statusText}`);
+    if (systemInstruction) {
+      payload.systemInstruction = {
+        parts: [{ text: systemInstruction }]
+      };
     }
 
-    const data = await response.json();
-    const candidate = data.candidates?.[0];
-    const text = candidate?.content?.parts?.[0]?.text;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-    if (!text) {
-      throw new Error('Empty response from Gemini API');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.warn(`Gemini model ${model} HTTP Error (${response.status}): ${errorText}`);
+        continue; // try next model fallback
+      }
+
+      const data = await response.json();
+      const candidate = data.candidates?.[0];
+      const text = candidate?.content?.parts?.[0]?.text;
+
+      if (text && text.trim()) {
+        return text.trim();
+      }
+    } catch (error: any) {
+      console.warn(`Gemini call to ${model} failed, trying next fallback...`);
     }
-
-    return text.trim();
-  } catch (error: any) {
-    console.error('Gemini API call failed:', error?.message || error);
-    throw error;
   }
+
+  throw new Error('All Gemini model fallbacks failed');
 }
 
 export function parseJSONFromText<T>(text: string, fallback: T): T {
