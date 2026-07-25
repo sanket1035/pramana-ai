@@ -16,7 +16,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false, onCloseMob
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'History', path: '/history', icon: History },
-    { label: 'Reports', path: '/history', icon: FileText },
+    { label: 'Reports', path: '/research/new', icon: FileText },
     { label: 'Agents', path: '/agents', icon: Bot },
     { label: 'Settings', path: '/settings', icon: Settings },
   ];
