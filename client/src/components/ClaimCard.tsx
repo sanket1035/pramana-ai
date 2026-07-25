@@ -37,13 +37,13 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({ claim }) => {
     <div className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--border-hover)] transition-all space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start space-x-3">
-          <span className="text-xs font-mono font-bold text-[var(--text-accent)] bg-[var(--bg-surface-highest)] px-2 py-0.5 rounded border border-[var(--border-main)] shrink-0">
+          <span className="text-xs font-mono font-bold text-[var(--text-accent)] bg-[var(--bg-surface-highest)] px-2 py-0.5 rounded border border-[var(--border-main)] shrink-0 mt-0.5">
             #{claim.order_index}
           </span>
-          <p className="text-sm font-sans font-medium text-[var(--text-main)] leading-snug">
-            {claim.claim_text}
+          <div className="text-sm font-sans font-medium text-[var(--text-main)] leading-snug">
+            <span>{claim.claim_text}</span>
             {claim.citation && <CitationPopover citation={claim.citation} />}
-          </p>
+          </div>
         </div>
         {getStatusBadge()}
       </div>

@@ -7,8 +7,8 @@ export async function callGeminiAPI(prompt: string, systemInstruction?: string):
     throw new Error('GEMINI_API_KEY is not configured');
   }
 
-  // Try gemini-2.0-flash first, then gemini-1.5-flash
-  const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+  // Model fallbacks supported on Google AI v1beta
+  const models = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-2.0-flash-exp'];
 
   for (const model of models) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
