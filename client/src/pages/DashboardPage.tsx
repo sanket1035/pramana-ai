@@ -1,208 +1,210 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, TrendingUp, ShieldCheck, Quote, Clock, FileText, Database, Upload, Globe } from 'lucide-react';
-import { getResearchHistory, createResearchSession } from '../services/api.js';
+import { ArrowRight, ShieldCheck, CheckCircle2, FileSpreadsheet, PlusCircle, Network, Clock } from 'lucide-react';
+import { createResearchSession, getResearchHistory } from '../services/api.js';
 import { HistoryItem } from '../types/index.js';
 
 export const DashboardPage: React.FC = () => {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [recentResearch, setRecentResearch] = useState<HistoryItem[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     getResearchHistory()
-      .then(setHistory)
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .then(setRecentResearch)
+      .catch(console.error);
   }, []);
 
   const handleStartResearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim() || submitting) return;
+    if (!query.trim() || loading) return;
 
-    setSubmitting(true);
+    setLoading(true);
     try {
       const { sessionId } = await createResearchSession(query.trim());
       navigate(`/research/${sessionId}/progress`);
     } catch (err) {
-      console.error('Error starting research:', err);
+      console.error('Failed to initiate research:', err);
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
-  const totalVerifiedClaims = history.reduce((acc, item) => acc + item.claimCount, 0) || 2841;
-
   return (
-    <div className="max-w-[1200px] mx-auto p-4 md:p-8 space-y-10">
+    <div className="max-w-[1200px] mx-auto p-4 md:p-8 space-y-10 pb-20">
       {/* Welcome Header */}
-      <section className="space-y-1">
-        <h1 className="font-serif text-3xl md:text-4xl font-bold text-[#e8e1dd]">
+      <div className="space-y-1.5">
+        <h1 className="font-serif text-3xl md:text-5xl font-bold text-[var(--text-main)] leading-tight">
           Welcome back, Researcher.
         </h1>
-        <p className="text-sm font-sans text-[#dbc2b0] max-w-2xl">
-          Your multi-agent research pipeline verified claims & citations across academic literature.
+        <p className="font-serif text-sm md:text-base text-[var(--text-muted)]">
+          Our multi-agent research pipeline verified claims & citations across academic literature.
         </p>
-      </section>
+      </div>
 
-      {/* Immediate Initiation Card */}
-      <section>
-        <div className="bg-[#221f1c] border border-[#554336]/60 p-6 md:p-8 rounded relative overflow-hidden group">
-          <div className="relative z-10 space-y-4">
-            <h2 className="font-mono text-xs text-[#ffb77d] uppercase tracking-widest font-semibold">
-              Immediate Initiation
-            </h2>
-            <form onSubmit={handleStartResearch} className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Enter a claim, research topic, or academic prompt..."
-                className="flex-1 bg-[#151310] border border-[#554336] focus:border-[#ffb77d] rounded px-5 py-3.5 font-sans text-sm text-[#e8e1dd] placeholder-[#dbc2b0]/50 outline-none transition-all"
-              />
-              <button
-                type="submit"
-                disabled={!query.trim() || submitting}
-                className="bg-[#ffb77d] hover:brightness-110 disabled:opacity-50 text-[#4d2600] px-8 py-3.5 font-mono font-bold text-xs rounded flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer uppercase tracking-wider shrink-0"
-              >
-                <span>{submitting ? 'Initiating...' : 'START'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-            <div className="flex flex-wrap gap-3 text-xs font-sans text-[#dbc2b0]/60 pt-1">
-              <span>Popular: "Macroeconomic impacts of synthetic biology"</span>
-              <span>•</span>
-              <span>"Fact-check: Quantum Cryptography Benchmarks"</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Stats Bento */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#1e1b19] border border-[#554336] p-6 rounded flex flex-col justify-between space-y-4">
-          <div>
-            <ShieldCheck className="w-6 h-6 text-[#ffb77d] mb-2" />
-            <div className="font-mono text-xs text-[#dbc2b0] uppercase tracking-wider">Research Sessions</div>
-          </div>
-          <div className="font-serif text-4xl font-bold text-[#e8e1dd]">{history.length || 142}</div>
-          <div className="text-xs font-mono text-[#ffb77d] flex items-center gap-1">
-            <TrendingUp className="w-3.5 h-3.5" /> +12% from last month
-          </div>
+      {/* Immediate Initiation Prompt Card */}
+      <div className="p-6 md:p-8 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] space-y-6 shadow-xl">
+        <div className="flex items-center space-x-2 font-mono text-xs text-[var(--text-accent)] uppercase tracking-widest font-bold">
+          <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse" />
+          <span>IMMEDIATE INITIATION</span>
         </div>
 
-        <div className="bg-[#1e1b19] border border-[#554336] p-6 rounded flex flex-col justify-between space-y-4">
-          <div>
-            <ShieldCheck className="w-6 h-6 text-[#ffb77d] mb-2" />
-            <div className="font-mono text-xs text-[#dbc2b0] uppercase tracking-wider">Verified Claims</div>
-          </div>
-          <div className="font-serif text-4xl font-bold text-[#e8e1dd]">{totalVerifiedClaims}</div>
-          <div className="text-xs font-mono text-[#dbc2b0]">
-            98.2% Accuracy Rating
-          </div>
-        </div>
+        <form onSubmit={handleStartResearch} className="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Enter a claim, research topic, or academic prompt..."
+            className="flex-1 bg-[var(--bg-main)] border border-[var(--border-main)] focus:border-[var(--text-accent)] text-sm font-sans text-[var(--text-main)] p-4 rounded placeholder-[var(--text-muted)]/50 outline-none transition-all"
+          />
+          <button
+            type="submit"
+            disabled={!query.trim() || loading}
+            className="bg-[var(--accent-primary)] hover:brightness-110 disabled:opacity-50 text-[var(--text-accent-contrast)] font-mono font-bold text-xs px-8 py-4 rounded flex items-center justify-center gap-2 transition-all cursor-pointer uppercase tracking-wider shrink-0"
+          >
+            <span>{loading ? 'INITIATING...' : 'START'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
 
-        <div className="bg-[#1e1b19] border border-[#554336] p-6 rounded flex flex-col justify-between space-y-4">
-          <div>
-            <Quote className="w-6 h-6 text-[#ffb77d] mb-2" />
-            <div className="font-mono text-xs text-[#dbc2b0] uppercase tracking-wider">Citations Gathered</div>
-          </div>
-          <div className="font-serif text-4xl font-bold text-[#e8e1dd]">14.5k</div>
-          <div className="text-xs font-mono text-[#dbc2b0]">
-            Across 420 Peer-reviewed sources
-          </div>
-        </div>
-      </section>
-
-      {/* Content Split: Recent Research & Reports */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recent Research Sessions */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-serif text-xl font-bold text-[#e8e1dd]">Recent Research</h3>
-            <button onClick={() => navigate('/history')} className="font-mono text-xs text-[#ffb77d] hover:underline">
-              View All
-            </button>
-          </div>
-
-          {loading ? (
-            <div className="p-8 text-center text-xs font-mono text-[#dbc2b0] bg-[#221f1c] rounded border border-[#554336]">
-              Loading research sessions...
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {history.map((session) => (
-                <div
-                  key={session.id}
-                  onClick={() => navigate(`/research/${session.id}`)}
-                  className="bg-[#2d2927]/40 border border-[#554336] p-5 rounded hover:bg-[#2d2927] transition-colors cursor-pointer group space-y-2"
-                >
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-sans font-semibold text-sm text-[#e8e1dd] group-hover:text-[#ffb77d] transition-colors truncate max-w-md">
-                      {session.query}
-                    </h4>
-                    <span className="bg-[#ffb77d]/10 text-[#ffb77d] border border-[#ffb77d]/20 text-[10px] px-2 py-0.5 rounded font-mono uppercase shrink-0">
-                      {session.overallConfidence}% Verified
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 text-xs font-mono text-[#dbc2b0]/70">
-                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {new Date(session.createdAt).toLocaleDateString()}</span>
-                    <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> {session.claimCount} claims</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Reports Side Panel */}
-        <div className="lg:col-span-1 space-y-4">
-          <h3 className="font-serif text-xl font-bold text-[#e8e1dd]">Vault Reports</h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 rounded bg-[#221f1c] border border-[#554336]">
-              <FileText className="w-5 h-5 text-[#ffb77d]" />
-              <div>
-                <div className="text-xs font-semibold text-[#e8e1dd]">Quantum_Encryption_Audit.md</div>
-                <div className="text-[10px] font-mono text-[#dbc2b0]/60">14 KB • Verified Citation</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded bg-[#221f1c] border border-[#554336]">
-              <FileText className="w-5 h-5 text-[#ffb77d]" />
-              <div>
-                <div className="text-xs font-semibold text-[#e8e1dd]">EU_AI_Act_Compliance.pdf</div>
-                <div className="text-[10px] font-mono text-[#dbc2b0]/60">2.8 MB • Formal Standard</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-[#1e1b19] border border-[#554336] p-5 rounded text-center space-y-3 mt-4">
-            <Upload className="w-8 h-8 text-[#a38c7c] mx-auto" />
-            <p className="text-xs font-sans text-[#dbc2b0]">Ingest custom papers to expand research scope</p>
-            <button className="w-full border border-[#a38c7c] text-[#e8e1dd] font-mono text-xs py-2 rounded hover:bg-[#383431] transition-colors cursor-pointer">
-              Upload Dataset
-            </button>
-          </div>
+        <div className="text-[11px] font-mono text-[var(--text-muted)] flex flex-wrap gap-x-4 gap-y-1">
+          <span className="text-[var(--text-muted)]/60">Popular:</span>
+          <button onClick={() => setQuery("Macroeconomic impacts of synthetic biology")} className="hover:text-[var(--text-accent)] transition-colors cursor-pointer">
+            "Macroeconomic impacts of synthetic biology"
+          </button>
+          <span>•</span>
+          <button onClick={() => setQuery("Fact-check: Quantum Cryptography Benchmarks")} className="hover:text-[var(--text-accent)] transition-colors cursor-pointer">
+            "Fact-check: Quantum Cryptography Benchmarks"
+          </button>
         </div>
       </div>
 
-      {/* Global Evidence Map Preview */}
-      <section className="pt-6 border-t border-[#554336]/40">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="font-mono text-xs text-[#ffb77d] uppercase tracking-widest font-semibold">Global Evidence Map</h3>
-            <p className="text-xs font-sans text-[#dbc2b0]">Spatial distribution of active research citations</p>
+      {/* Bento Grid Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-6 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] space-y-4">
+          <div className="flex justify-between items-start">
+            <span className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-wider block font-semibold">
+              RESEARCH SESSIONS
+            </span>
+            <ShieldCheck className="w-5 h-5 text-[var(--text-accent)]" />
           </div>
-          <span className="font-mono text-xs text-[#ffb77d] bg-[#ffb77d]/10 px-2 py-0.5 rounded border border-[#ffb77d]/20">GLOBAL</span>
+          <div className="font-serif text-4xl font-bold text-[var(--text-main)]">
+            {recentResearch.length > 0 ? recentResearch.length : '1'}
+          </div>
+          <p className="font-mono text-[10px] text-[var(--text-accent)]">↗ +12% from last month</p>
         </div>
-        <div className="h-48 w-full bg-[#1e1b19] rounded border border-[#554336] flex items-center justify-center relative overflow-hidden">
-          <Globe className="w-16 h-16 text-[#ffb77d]/20 animate-pulse" />
-          <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-[#dbc2b0]/60">
-            Node Clusters Connected • 420 Academic Sources Indexed
+
+        <div className="p-6 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] space-y-4">
+          <div className="flex justify-between items-start">
+            <span className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-wider block font-semibold">
+              VERIFIED CLAIMS
+            </span>
+            <CheckCircle2 className="w-5 h-5 text-[var(--text-accent)]" />
+          </div>
+          <div className="font-serif text-4xl font-bold text-[var(--text-main)]">
+            {recentResearch.length > 0 ? recentResearch.length * 4 : '4'}
+          </div>
+          <p className="font-mono text-[10px] text-green-500">98.2% Accuracy Rating</p>
+        </div>
+
+        <div className="p-6 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] space-y-4">
+          <div className="flex justify-between items-start">
+            <span className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-wider block font-semibold">
+              CITATIONS GATHERED
+            </span>
+            <span className="font-serif text-2xl font-bold text-[var(--text-accent)]">99</span>
+          </div>
+          <div className="font-serif text-4xl font-bold text-[var(--text-main)]">14.5k</div>
+          <p className="font-mono text-[10px] text-[var(--text-muted)]">Across 420 Peer-reviewed sources</p>
+        </div>
+      </div>
+
+      {/* Recent Research & Vault Reports */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Recent Research List */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-serif text-2xl font-bold text-[var(--text-main)]">Recent Research</h2>
+            <button
+              onClick={() => navigate('/history')}
+              className="font-mono text-xs text-[var(--text-accent)] hover:underline cursor-pointer uppercase"
+            >
+              View All ↵
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {recentResearch.length > 0 ? (
+              recentResearch.slice(0, 4).map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(`/research/${item.id}`)}
+                  className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer space-y-2 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-sans font-semibold text-sm text-[var(--text-main)] group-hover:text-[var(--text-accent)] transition-colors truncate max-w-md">
+                      {item.query}
+                    </h3>
+                    <span className="font-mono text-[10px] bg-[var(--text-accent)]/10 text-[var(--text-accent)] border border-[var(--text-accent)]/20 px-2 py-0.5 rounded uppercase shrink-0">
+                      {item.overallConfidence}% Verified
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-4 text-[11px] font-mono text-[var(--text-muted)]">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div
+                onClick={() => navigate('/research/new')}
+                className="p-6 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer text-center space-y-2 group"
+              >
+                <PlusCircle className="w-8 h-8 text-[var(--text-accent)] mx-auto group-hover:scale-110 transition-transform" />
+                <p className="text-xs font-mono text-[var(--text-main)]">No active sessions yet. Initiate your first research topic!</p>
+              </div>
+            )}
           </div>
         </div>
-      </section>
+
+        {/* Global Evidence Map & Reports Vault */}
+        <div className="lg:col-span-5 space-y-4">
+          <h2 className="font-serif text-2xl font-bold text-[var(--text-main)]">Vault Reports</h2>
+
+          <div className="space-y-3">
+            <div
+              onClick={() => navigate('/history')}
+              className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer flex items-center justify-between group"
+            >
+              <div className="flex items-center space-x-3">
+                <FileSpreadsheet className="w-5 h-5 text-[var(--text-accent)] shrink-0" />
+                <div>
+                  <h4 className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--text-accent)]">Quantum_Encryption_Audit.md</h4>
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">14 KB • Verified Citation</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-accent)] group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div
+              onClick={() => navigate('/history')}
+              className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer flex items-center justify-between group"
+            >
+              <div className="flex items-center space-x-3">
+                <FileSpreadsheet className="w-5 h-5 text-[var(--text-accent)] shrink-0" />
+                <div>
+                  <h4 className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--text-accent)]">EU_AI_Act_Compliance.pdf</h4>
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">2.8 MB • Formal Standard</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-accent)] group-hover:translate-x-1 transition-all" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

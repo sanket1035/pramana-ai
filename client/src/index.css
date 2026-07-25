@@ -1,49 +1,62 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg-main: #151310;
-    --bg-surface: #1e1b19;
-    --bg-surface-container: #221f1c;
-    --bg-surface-high: #2d2927;
-    --bg-surface-highest: #383431;
-    --text-primary: #e8e1dd;
-    --text-muted: #dbc2b0;
-    --accent-amber: #ffb77d;
-    --accent-dark: #4d2600;
-    --border-color: #554336;
-    --border-hover: #a38c7c;
-  }
-
-  html.light {
-    --bg-main: #fbf9f7;
-    --bg-surface: #ffffff;
-    --bg-surface-container: #f3efe9;
-    --bg-surface-high: #eae4dc;
-    --bg-surface-highest: #e0d8cd;
-    --text-primary: #1c1917;
-    --text-muted: #57534e;
-    --accent-amber: #d97707;
-    --accent-dark: #ffffff;
-    --border-color: #d6cebc;
-    --border-hover: #a89f91;
-  }
-
-  body {
-    background-color: var(--bg-main);
-    color: var(--text-primary);
-    font-family: 'Inter', sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Source Serif 4', serif;
-  }
-
-  code, pre, .font-mono {
-    font-family: 'Geist Mono', monospace;
-  }
+:root, html.dark {
+  --bg-main: #151310;
+  --bg-sidebar: #1e1b19;
+  --bg-surface: #221f1c;
+  --bg-surface-high: #2d2927;
+  --bg-surface-highest: #383431;
+  --text-main: #e8e1dd;
+  --text-muted: #dbc2b0;
+  --text-accent: #ffb77d;
+  --text-accent-contrast: #4d2600;
+  --border-main: #554336;
+  --border-hover: #a38c7c;
+  --accent-primary: #ffb77d;
 }
+
+html.light {
+  --bg-main: #fbf9f7;
+  --bg-sidebar: #f3efea;
+  --bg-surface: #ffffff;
+  --bg-surface-high: #eae4d9;
+  --bg-surface-highest: #e0d8cd;
+  --text-main: #1d1b18;
+  --text-muted: #615a52;
+  --text-accent: #d97707;
+  --text-accent-contrast: #ffffff;
+  --border-main: #d8cfc0;
+  --border-hover: #a89f91;
+  --accent-primary: #d97707;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Source Serif 4', serif;
+}
+
+code, pre, .font-mono {
+  font-family: 'Geist Mono', monospace;
+}
+
+/* Theme Utilities */
+.bg-theme-main { background-color: var(--bg-main); }
+.bg-theme-sidebar { background-color: var(--bg-sidebar); }
+.bg-theme-surface { background-color: var(--bg-surface); }
+.bg-theme-surface-high { background-color: var(--bg-surface-high); }
+.bg-theme-surface-highest { background-color: var(--bg-surface-highest); }
+.text-theme-main { color: var(--text-main); }
+.text-theme-muted { color: var(--text-muted); }
+.text-theme-accent { color: var(--text-accent); }
+.border-theme-main { border-color: var(--border-main); }
+.border-theme-hover { border-color: var(--border-hover); }
+.bg-theme-accent { background-color: var(--accent-primary); }
 
 /* Global scrollbar */
 ::-webkit-scrollbar {
@@ -54,6 +67,6 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--border-main);
   border-radius: 3px;
 }

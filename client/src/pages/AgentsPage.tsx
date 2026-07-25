@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, Search, FileText, CheckCircle2, AlertTriangle, ShieldCheck, FileSpreadsheet, RefreshCw, Download } from 'lucide-react';
+import { Search, FileText, CheckCircle2, AlertTriangle, ShieldCheck, FileSpreadsheet, RefreshCw, Download } from 'lucide-react';
 
 export const AgentsPage: React.FC = () => {
   const agents = [
@@ -60,23 +60,23 @@ export const AgentsPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto p-4 md:p-8 space-y-8">
+    <div className="max-w-[1200px] mx-auto p-4 md:p-8 space-y-8 pb-20">
       {/* Header Breadcrumb & Title */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <nav className="flex items-center gap-1.5 mb-1 font-mono text-[10px] text-[#dbc2b0] tracking-widest uppercase">
+          <nav className="flex items-center gap-1.5 mb-1 font-mono text-[10px] text-[var(--text-muted)] tracking-widest uppercase">
             <span>Workspace</span>
             <span>›</span>
-            <span className="text-[#ffb77d]">Agent Infrastructure</span>
+            <span className="text-[var(--text-accent)]">Agent Infrastructure</span>
           </nav>
-          <h1 className="font-serif text-3xl font-bold text-[#e8e1dd]">System Monitoring</h1>
+          <h1 className="font-serif text-3xl font-bold text-[var(--text-main)]">System Monitoring</h1>
         </div>
 
         <div className="flex gap-3">
-          <button className="font-mono text-xs px-4 py-2 border border-[#554336] text-[#dbc2b0] hover:border-[#ffb77d] hover:text-[#ffb77d] transition-all rounded uppercase cursor-pointer flex items-center gap-1.5">
+          <button className="font-mono text-xs px-4 py-2 border border-[var(--border-main)] text-[var(--text-muted)] hover:border-[var(--text-accent)] hover:text-[var(--text-accent)] transition-all rounded uppercase cursor-pointer flex items-center gap-1.5">
             <RefreshCw className="w-3.5 h-3.5" /> REBOOT CLUSTER
           </button>
-          <button className="font-mono text-xs px-4 py-2 bg-[#221f1c] text-[#e8e1dd] border border-[#554336] hover:bg-[#383431] transition-all rounded uppercase cursor-pointer flex items-center gap-1.5">
+          <button className="font-mono text-xs px-4 py-2 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-main)] hover:bg-[var(--bg-surface-high)] transition-all rounded uppercase cursor-pointer flex items-center gap-1.5">
             <Download className="w-3.5 h-3.5" /> EXPORT TELEMETRY
           </button>
         </div>
@@ -87,39 +87,39 @@ export const AgentsPage: React.FC = () => {
         {agents.map((agent) => (
           <div
             key={agent.id}
-            className="bg-[#221f1c] p-6 border border-[#554336] rounded relative overflow-hidden space-y-6 group"
+            className="bg-[var(--bg-surface)] p-6 border border-[var(--border-main)] rounded relative overflow-hidden space-y-6 group"
           >
-            <div className="absolute top-0 left-0 w-1 h-full bg-[#ffb77d]" />
+            <div className="absolute top-0 left-0 w-1 h-full bg-[var(--accent-primary)]" />
 
             <div className="flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <agent.icon className="w-5 h-5 text-[#ffb77d]" />
-                  <h3 className="font-mono text-sm font-bold text-[#e8e1dd] uppercase">{agent.id}</h3>
+                  <agent.icon className="w-5 h-5 text-[var(--text-accent)]" />
+                  <h3 className="font-mono text-sm font-bold text-[var(--text-main)] uppercase">{agent.id}</h3>
                 </div>
-                <p className="text-[#dbc2b0]/70 text-xs font-sans">{agent.desc}</p>
+                <p className="text-[var(--text-muted)] text-xs font-sans">{agent.desc}</p>
               </div>
               <div className="text-right">
-                <span className="font-mono text-[10px] text-[#dbc2b0] block mb-1">STATUS</span>
-                <span className="font-mono text-xs text-[#ffb77d] font-bold bg-[#ffb77d]/10 px-2 py-0.5 rounded border border-[#ffb77d]/20">
+                <span className="font-mono text-[10px] text-[var(--text-muted)] block mb-1">STATUS</span>
+                <span className="font-mono text-xs text-[var(--text-accent)] font-bold bg-[var(--text-accent)]/10 px-2 py-0.5 rounded border border-[var(--text-accent)]/20">
                   ONLINE
                 </span>
               </div>
             </div>
 
             {/* Performance Stats */}
-            <div className="grid grid-cols-3 gap-6 border-t border-[#554336]/40 pt-4">
+            <div className="grid grid-cols-3 gap-6 border-t border-[var(--border-main)]/40 pt-4">
               <div>
-                <span className="font-mono text-[10px] text-[#dbc2b0]/60 block uppercase">Processed</span>
-                <span className="font-serif text-xl font-bold text-[#e8e1dd]">{agent.sources}</span>
+                <span className="font-mono text-[10px] text-[var(--text-muted)] block uppercase">Processed</span>
+                <span className="font-serif text-xl font-bold text-[var(--text-main)]">{agent.sources}</span>
               </div>
               <div>
-                <span className="font-mono text-[10px] text-[#dbc2b0]/60 block uppercase">Tokens</span>
-                <span className="font-serif text-xl font-bold text-[#e8e1dd]">{agent.tokens}</span>
+                <span className="font-mono text-[10px] text-[var(--text-muted)] block uppercase">Tokens</span>
+                <span className="font-serif text-xl font-bold text-[var(--text-main)]">{agent.tokens}</span>
               </div>
               <div>
-                <span className="font-mono text-[10px] text-[#dbc2b0]/60 block uppercase">Load</span>
-                <span className="font-serif text-xl font-bold text-[#ffb77d]">{agent.load}</span>
+                <span className="font-mono text-[10px] text-[var(--text-muted)] block uppercase">Load</span>
+                <span className="font-serif text-xl font-bold text-[var(--text-accent)]">{agent.load}</span>
               </div>
             </div>
           </div>
