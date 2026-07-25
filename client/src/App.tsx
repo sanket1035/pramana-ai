@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.js';
+import { ThemeProvider } from './context/ThemeContext.js';
 import { Navbar } from './components/Navbar.js';
 import { Sidebar } from './components/Sidebar.js';
 import { CommandPalette } from './components/CommandPalette.js';
@@ -25,6 +26,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 const AppLayout: React.FC = () => {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated } = useAuth();
 
@@ -41,13 +43,16 @@ const AppLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#151310] text-[#e8e1dd] font-sans selection:bg-[#ffb77d] selection:text-[#4d2600]">
-      <Sidebar />
-      <Navbar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] font-sans selection:bg-[#ffb77d]/30 selection:text-[#ffb77d]">
+      <Sidebar mobileOpen={mobileSidebarOpen} onCloseMobile={() => setMobileSidebarOpen(false)} />
+      <Navbar
+        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+        onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+      />
       <CommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
 
-      {/* Main Content Area: Margin left 260px for sidebar, Padding top 16 for header */}
-      <main className="md:ml-[260px] pt-16 min-h-screen bg-[#151310] overflow-y-auto">
+      {/* Main Content Area */}
+      <main className="md:ml-[260px] pt-16 min-h-screen bg-[var(--bg-main)] overflow-y-auto">
         <Routes>
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/research/new" element={<ProtectedRoute><NewResearchPage /></ProtectedRoute>} />
@@ -66,11 +71,13 @@ const AppLayout: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <AppLayout />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <AppLayout />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

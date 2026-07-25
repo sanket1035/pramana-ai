@@ -2,65 +2,58 @@
 
 @layer base {
   :root {
-    --bg-background: #151310;
-    --bg-surface: #151310;
-    --bg-surface-low: #1e1b19;
+    --bg-main: #151310;
+    --bg-surface: #1e1b19;
     --bg-surface-container: #221f1c;
     --bg-surface-high: #2d2927;
     --bg-surface-highest: #383431;
-    --primary: #ffb77d;
-    --primary-container: #d97707;
-    --on-primary: #4d2600;
-    --on-surface: #e8e1dd;
-    --on-surface-variant: #dbc2b0;
-    --outline: #a38c7c;
-    --outline-variant: #554336;
+    --text-primary: #e8e1dd;
+    --text-muted: #dbc2b0;
+    --accent-amber: #ffb77d;
+    --accent-dark: #4d2600;
+    --border-color: #554336;
+    --border-hover: #a38c7c;
+  }
+
+  html.light {
+    --bg-main: #fbf9f7;
+    --bg-surface: #ffffff;
+    --bg-surface-container: #f3efe9;
+    --bg-surface-high: #eae4dc;
+    --bg-surface-highest: #e0d8cd;
+    --text-primary: #1c1917;
+    --text-muted: #57534e;
+    --accent-amber: #d97707;
+    --accent-dark: #ffffff;
+    --border-color: #d6cebc;
+    --border-hover: #a89f91;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Source Serif 4', serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'Geist Mono', monospace;
   }
 }
 
-body {
-  background-color: var(--bg-background);
-  color: var(--on-surface);
-  font-family: 'Inter', sans-serif;
-}
-
-h1, h2, h3, h4, .font-headline, .font-serif {
-  font-family: 'Source Serif 4', serif;
-}
-
-.font-mono, .font-label-mono {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
-}
-
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-}
-
-/* Custom Scrollbars matching Stitch */
+/* Global scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #1e1b19;
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #383431;
-  border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #554336;
-}
-
-@keyframes shimmer {
-  0% { opacity: 0.3; transform: translateX(-100%); }
-  50% { opacity: 1; }
-  100% { opacity: 0.3; transform: translateX(200%); }
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite;
+  background: var(--border-color);
+  border-radius: 3px;
 }

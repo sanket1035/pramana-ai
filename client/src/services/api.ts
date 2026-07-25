@@ -50,3 +50,8 @@ export async function deleteResearchReport(sessionId: string): Promise<void> {
     throw new Error('Failed to delete report');
   }
 }
+
+export async function clearResearchHistory(): Promise<void> {
+  const history = await getResearchHistory();
+  await Promise.all(history.map(item => deleteResearchReport(item.id).catch(() => {})));
+}
