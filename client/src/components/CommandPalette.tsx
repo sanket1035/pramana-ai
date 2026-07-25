@@ -18,9 +18,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         if (isOpen) onClose();
-        else {
-          // Open handled by parent or state
-        }
       }
       if (e.key === 'Escape' && isOpen) {
         onClose();
@@ -51,54 +48,54 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
 
   const quickNavItems = [
     { title: 'Start New Research', icon: PlusCircle, path: '/research/new' },
-    { title: 'View Past Research History', icon: History, path: '/history' },
+    { title: 'View Past History', icon: History, path: '/history' },
     { title: 'Explore 6 AI Agents', icon: Bot, path: '/agents' },
     { title: 'System Settings', icon: Settings, path: '/settings' },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
-      <div className="w-full max-w-xl bg-[#111113] border border-[#27272A] rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
-        {/* Header & Search Bar */}
-        <form onSubmit={handleStartResearch} className="flex items-center px-4 py-3.5 border-b border-[#27272A]">
-          <Search className="w-5 h-5 text-purple-400 shrink-0 mr-3" />
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
+      <div className="w-full max-w-xl bg-[#221f1c] border border-[#554336] rounded shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        {/* Header & Input */}
+        <form onSubmit={handleStartResearch} className="flex items-center px-4 py-3.5 border-b border-[#554336]">
+          <Search className="w-5 h-5 text-[#ffb77d] shrink-0 mr-3" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type a research question or command..."
-            className="w-full bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none"
+            placeholder="Search research vault or enter prompt..."
+            className="w-full bg-transparent text-sm font-sans text-[#e8e1dd] placeholder-[#dbc2b0]/50 focus:outline-none"
             autoFocus
           />
-          <button type="button" onClick={onClose} className="p-1 text-zinc-500 hover:text-white">
+          <button type="button" onClick={onClose} className="p-1 text-[#dbc2b0] hover:text-[#e8e1dd]">
             <X className="w-4 h-4" />
           </button>
         </form>
 
-        {/* Content Body */}
-        <div className="p-3 space-y-4 max-h-[360px] overflow-y-auto">
+        {/* Command Body */}
+        <div className="p-3 space-y-3 max-h-[360px] overflow-y-auto">
           {query.trim() ? (
             <button
               onClick={handleStartResearch}
               disabled={loading}
-              className="w-full flex items-center justify-between p-3 rounded-lg bg-purple-950/40 border border-purple-800/50 text-left hover:bg-purple-900/40 transition-colors group cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded bg-[#1e1b19] border border-[#554336] text-left hover:border-[#ffb77d] transition-colors group cursor-pointer"
             >
               <div className="flex items-center space-x-3">
-                <ShieldCheck className="w-5 h-5 text-purple-400 shrink-0" />
+                <ShieldCheck className="w-5 h-5 text-[#ffb77d] shrink-0" />
                 <div>
-                  <div className="text-xs font-semibold text-purple-200">
-                    Run Multi-Agent Verification Pipeline
+                  <div className="text-xs font-mono font-semibold text-[#ffb77d]">
+                    INITIATE VERIFICATION PIPELINE
                   </div>
-                  <div className="text-[11px] text-zinc-400 truncate max-w-md">
+                  <div className="text-xs text-[#e8e1dd] truncate max-w-md">
                     "{query}"
                   </div>
                 </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-purple-400 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-[#ffb77d] group-hover:translate-x-1 transition-transform" />
             </button>
           ) : (
             <div className="space-y-1">
-              <div className="px-2 py-1 text-[10px] font-mono font-semibold text-zinc-500 uppercase tracking-wider">
+              <div className="px-2 py-1 text-[10px] font-mono font-semibold text-[#dbc2b0]/60 uppercase tracking-wider">
                 Quick Navigation
               </div>
               {quickNavItems.map((item) => (
@@ -108,13 +105,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     onClose();
                     navigate(item.path);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[#161619] text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded hover:bg-[#383431] text-xs font-sans text-[#dbc2b0] hover:text-[#e8e1dd] transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
-                    <item.icon className="w-4 h-4 text-purple-400" />
+                    <item.icon className="w-4 h-4 text-[#ffb77d]" />
                     <span>{item.title}</span>
                   </div>
-                  <span className="text-[10px] font-mono text-zinc-500">Jump ↵</span>
+                  <span className="text-[10px] font-mono text-[#a38c7c]">Jump ↵</span>
                 </button>
               ))}
             </div>
@@ -122,8 +119,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-[#27272A] bg-[#09090B] flex items-center justify-between text-[11px] text-zinc-500 font-mono">
-          <span>Pramāṇa AI Command Hub</span>
+        <div className="px-4 py-2 border-t border-[#554336] bg-[#151310] flex items-center justify-between text-[10px] font-mono text-[#dbc2b0]/60">
+          <span>Pramāṇa Research OS</span>
           <span>Press ESC to close</span>
         </div>
       </div>

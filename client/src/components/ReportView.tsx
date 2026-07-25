@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Share2, Copy, Check, ShieldCheck, Sparkles, BookOpen } from 'lucide-react';
+import { Download, Copy, Check, ShieldCheck, Sparkles, BookOpen } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { FullReportPayload } from '../types/index.js';
 import { ClaimCard } from './ClaimCard.js';
@@ -29,48 +29,45 @@ export const ReportView: React.FC<ReportViewProps> = ({ payload }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-16">
-      {/* Report Header Card */}
-      <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-[#111113] via-[#141418] to-purple-950/20 border border-[#27272A] space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#27272A] pb-6">
-          <div className="space-y-1.5">
-            <span className="text-xs font-mono text-purple-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-purple-400" />
-              Verified Citation-Backed Report
+    <div className="max-w-[720px] mx-auto space-y-10 pb-20">
+      {/* Header Document Card */}
+      <div className="bg-[#221f1c] border border-[#554336] p-6 md:p-8 rounded space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#554336] pb-6">
+          <div className="space-y-1">
+            <span className="font-mono text-xs text-[#ffb77d] uppercase tracking-widest font-semibold flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-[#ffb77d]" />
+              Pramāṇa Executive Research Report
             </span>
-            <h1 className="text-xl md:text-2xl font-heading font-bold text-white leading-tight">
+            <h1 className="font-serif text-2xl md:text-3xl font-bold text-[#e8e1dd] leading-tight">
               {session.query}
             </h1>
-            <p className="text-xs font-mono text-zinc-400">
-              Completed on {new Date(report.created_at).toLocaleDateString()} • ID: {session.id.slice(0, 8)}
+            <p className="font-mono text-xs text-[#dbc2b0]/70">
+              Verified on {new Date(report.created_at).toLocaleDateString()} • Session: {session.id.slice(0, 8)}
             </p>
           </div>
 
-          {/* Overall Confidence Gauge Badge */}
-          <div className="flex items-center space-x-3 bg-[#09090B] p-3 rounded-xl border border-[#27272A] shrink-0">
+          <div className="flex items-center space-x-3 bg-[#151310] p-3.5 rounded border border-[#554336] shrink-0">
             <div className="text-right">
-              <div className="text-[10px] font-mono text-zinc-400 uppercase">Overall Confidence</div>
-              <div className="text-2xl font-heading font-extrabold text-purple-400">
+              <div className="font-mono text-[10px] text-[#dbc2b0] uppercase">Confidence Score</div>
+              <div className="font-serif text-2xl font-bold text-[#ffb77d]">
                 {report.overall_confidence}%
               </div>
             </div>
-            <div className="w-10 h-10 rounded-full border-2 border-purple-500 flex items-center justify-center bg-purple-950/40">
-              <Sparkles className="w-5 h-5 text-purple-300" />
-            </div>
+            <Sparkles className="w-6 h-6 text-[#ffb77d]" />
           </div>
         </div>
 
         {/* Action Toolbar */}
-        <div className="flex items-center justify-between gap-3 text-xs">
-          <div className="flex items-center space-x-2 text-zinc-400 font-mono">
-            <BookOpen className="w-4 h-4 text-purple-400" />
-            <span>{claims.length} Extracted Claims Verified</span>
+        <div className="flex items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center space-x-2 text-[#dbc2b0]">
+            <BookOpen className="w-4 h-4 text-[#ffb77d]" />
+            <span>{claims.length} Verified Claims</span>
           </div>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={handleCopyMarkdown}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#1C1C1F] hover:bg-[#27272A] text-zinc-300 hover:text-white border border-[#27272A] transition-colors cursor-pointer"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded bg-[#1e1b19] hover:bg-[#383431] text-[#e8e1dd] border border-[#554336] transition-colors cursor-pointer"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied' : 'Copy MD'}</span>
@@ -78,10 +75,10 @@ export const ReportView: React.FC<ReportViewProps> = ({ payload }) => {
 
             <button
               onClick={handleDownloadMarkdown}
-              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium shadow-md shadow-purple-950/30 transition-all cursor-pointer"
+              className="flex items-center space-x-1.5 px-4 py-1.5 rounded bg-[#ffb77d] hover:brightness-110 text-[#4d2600] font-bold transition-all cursor-pointer uppercase"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Export Report</span>
+              <span>Export</span>
             </button>
           </div>
         </div>
@@ -89,9 +86,9 @@ export const ReportView: React.FC<ReportViewProps> = ({ payload }) => {
 
       {/* Verified Claims Matrix */}
       <div className="space-y-4">
-        <h2 className="text-base font-heading font-bold text-white flex items-center gap-2">
-          <span>Verified Claims & Evidence Matrix</span>
-          <span className="text-xs font-mono bg-purple-950/60 text-purple-300 px-2 py-0.5 rounded border border-purple-800/50">
+        <h2 className="font-serif text-xl font-bold text-[#e8e1dd] flex items-center gap-2">
+          <span>Claims & Evidence Matrix</span>
+          <span className="font-mono text-xs bg-[#ffb77d]/10 text-[#ffb77d] px-2 py-0.5 rounded border border-[#ffb77d]/20">
             {claims.length}
           </span>
         </h2>
@@ -102,8 +99,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ payload }) => {
         </div>
       </div>
 
-      {/* Full Markdown Body Document */}
-      <div className="p-6 md:p-8 rounded-2xl bg-[#111113] border border-[#27272A] prose prose-invert max-w-none prose-headings:font-heading prose-headings:text-white prose-p:text-zinc-300 prose-li:text-zinc-300 prose-code:text-purple-300 prose-code:font-mono">
+      {/* Editorial Long-Form Report Body */}
+      <div className="bg-[#221f1c] border border-[#554336] p-6 md:p-10 rounded font-serif text-[18px] leading-[30px] text-[#e8e1dd] prose prose-invert max-w-none prose-headings:font-serif prose-headings:text-[#e8e1dd] prose-p:text-[#e8e1dd] prose-code:font-mono prose-code:text-[#ffb77d]">
         <ReactMarkdown>{report.content_markdown}</ReactMarkdown>
       </div>
     </div>

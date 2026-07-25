@@ -1,65 +1,71 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, PlusCircle, History, Bot, Settings, ShieldCheck, Sparkles } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, History, FileText, Bot, Settings, User, Plus } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+
   const navItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { label: 'New Research', icon: PlusCircle, path: '/research/new' },
-    { label: 'Research History', icon: History, path: '/history' },
-    { label: 'Multi-Agents', icon: Bot, path: '/agents' },
+    { label: 'History', icon: History, path: '/history' },
+    { label: 'Reports', icon: FileText, path: '/research/new' },
+    { label: 'Agents', icon: Bot, path: '/agents' },
     { label: 'Settings', icon: Settings, path: '/settings' },
   ];
 
   return (
-    <aside className="w-64 border-r border-[#27272A] bg-[#09090B] flex flex-col justify-between p-4 shrink-0 hidden md:flex min-h-[calc(100vh-4rem)]">
-      <div className="space-y-6">
-        {/* Nav Links */}
-        <div className="space-y-1">
-          <div className="px-3 py-1.5 text-[11px] font-mono font-semibold text-zinc-500 uppercase tracking-wider">
-            Platform OS
-          </div>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                  isActive
-                    ? 'bg-purple-950/40 text-purple-200 border border-purple-800/40 shadow-sm shadow-purple-950/30'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-[#111113]'
-                }`
-              }
-            >
-              <item.icon className="w-4 h-4 text-purple-400 shrink-0" />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
+    <aside className="w-[260px] h-screen fixed left-0 top-0 border-r border-[#554336] bg-[#221f1c] flex flex-col py-6 px-4 z-50 shrink-0 hidden md:flex">
+      {/* Brand Header */}
+      <div className="mb-10 px-2 cursor-pointer" onClick={() => navigate('/')}>
+        <div className="font-serif text-3xl font-bold text-[#e8e1dd] leading-none tracking-tight">
+          Pramāṇa
         </div>
-
-        {/* Pipeline Agents Badge */}
-        <div className="p-3.5 rounded-xl bg-[#111113] border border-[#27272A] space-y-2.5">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono text-purple-300 font-medium flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-              6-Agent Pipeline
-            </span>
-            <span className="text-[10px] bg-green-950/60 text-green-400 px-1.5 py-0.5 rounded border border-green-800/50 font-mono">
-              ACTIVE
-            </span>
-          </div>
-          <p className="text-[11px] text-zinc-400 leading-relaxed">
-            Gemini 2.5 Flash model scoring every claim with transparent source citations.
-          </p>
+        <div className="font-mono text-xs text-[#dbc2b0] mt-1 tracking-wider">
+          AI Research Platform
         </div>
       </div>
 
-      {/* Footer Info */}
-      <div className="pt-4 border-t border-[#27272A] flex items-center justify-between text-[11px] text-zinc-500 font-mono">
-        <span>Pramāṇa v1.0.0</span>
-        <span className="flex items-center gap-1 text-purple-400">
-          <ShieldCheck className="w-3.5 h-3.5" /> Verified
-        </span>
+      {/* Navigation Links */}
+      <nav className="flex-1 space-y-1">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2.5 transition-colors duration-200 text-sm ${
+                isActive
+                  ? 'text-[#e8e1dd] font-bold border-r-2 border-[#ffb77d] bg-[#383431]/30'
+                  : 'text-[#dbc2b0] font-medium hover:bg-[#383431] hover:text-[#e8e1dd]'
+              }`
+            }
+          >
+            <item.icon className="w-4 h-4 text-[#ffb77d] shrink-0" />
+            <span className="font-sans">{item.label}</span>
+          </NavLink>
+        ))}
+      </nav>
+
+      {/* Footer & New Research CTA */}
+      <div className="mt-auto pt-6 border-t border-[#554336]">
+        <button
+          onClick={() => navigate('/research/new')}
+          className="w-full bg-[#ffb77d] text-[#4d2600] font-mono font-bold text-xs py-3 rounded mb-4 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+        >
+          <Plus className="w-4 h-4" />
+          <span>New Research</span>
+        </button>
+
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2 transition-colors duration-200 text-xs font-medium ${
+              isActive ? 'text-[#ffb77d]' : 'text-[#dbc2b0] hover:text-[#e8e1dd]'
+            }`
+          }
+        >
+          <User className="w-4 h-4" />
+          <span className="font-sans">Profile</span>
+        </NavLink>
       </div>
     </aside>
   );
