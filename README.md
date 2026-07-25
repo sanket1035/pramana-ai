@@ -296,8 +296,8 @@ The platform focuses on explainable AI by showing how information was researched
 
 | Name | Role |
 |------|------|
-| **Sanket Chaudhari** | Full Stack Development • AI Engineering • System Architecture |
-| **Purva Chopade** | Frontend Development • UI/UX Design • Documentation |
+| **Sanket Chaudhari** | Full Stack Development • AI Engineering • System Architecture  • Frontend Development • UI/UX Design  |
+| **Purva Chopade** | Documentation |
 
 ---
 
