@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { ENV } from './config/env.js';
 import healthRouter from './routes/health.js';
@@ -26,11 +27,22 @@ app.use('/api', historyRouter);
 
 // Serve static client dist if available
 const clientDist = path.resolve(__dirname, '../../client/dist');
-app.use(express.static(clientDist));
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+}
 
 app.get('*', (req: Request, res: Response) => {
   if (!req.path.startsWith('/api') && !req.path.startsWith('/health')) {
-    res.sendFile(path.join(clientDist, 'index.html'));
+    const indexPath = path.join(clientDist, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      return res.sendFile(indexPath);
+    } else {
+      return res.json({
+        status: 'online',
+        service: 'Pramāṇa AI Server & Agent Orchestrator',
+        version: '1.0.0'
+      });
+    }
   } else {
     res.status(404).json({ error: 'Endpoint not found' });
   }
