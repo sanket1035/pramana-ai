@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Bell, Menu, CheckCircle2, AlertTriangle, ShieldCheck, X, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
+import { getResearchHistory } from '../services/api.js';
+import { HistoryItem } from '../types/index.js';
 
 interface NavbarProps {
   onOpenCommandPalette: () => void;
@@ -19,6 +21,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [unread, setUnread] = useState(true);
+  const [userHistory, setUserHistory] = useState<HistoryItem[]>([]);
+
+  useEffect(() => {
+    getResearchHistory(user?.uid || user?.email)
+      .then(setUserHistory)
+      .catch(console.error);
+  }, [user]);
 
   const handleLogout = async () => {
     setUserMenuOpen(false);
@@ -26,9 +35,21 @@ export const Navbar: React.FC<NavbarProps> = ({
     navigate('/login');
   };
 
-  const notifications = [
+  const dynamicNotifications = [
+    ...(userHistory.length > 0
+      ? [
+          {
+            id: 'latest-res',
+            title: `Research Report Ready`,
+            desc: `Verified "${userHistory[0].query.slice(0, 30)}..." with ${userHistory[0].overallConfidence}% score.`,
+            time: 'Recently',
+            icon: CheckCircle2,
+            color: 'text-green-500'
+          }
+        ]
+      : []),
     {
-      id: 1,
+      id: 'net-1',
       title: 'Multi-Agent Verification Pipeline Active',
       desc: '4-agent autonomous pipeline connected to Gemini reasoning cluster.',
       time: 'Just now',
@@ -36,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       color: 'text-[var(--text-accent)]'
     },
     {
-      id: 2,
+      id: 'net-2',
       title: 'Live Academic Search Anchors Synced',
       desc: 'Direct query anchors active for arXiv, Google Scholar & IEEE.',
       time: '5m ago',
@@ -44,9 +65,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       color: 'text-[#38bdf8]'
     },
     {
-      id: 3,
-      title: 'System Telemetry Synced',
-      desc: 'Real-time telemetry and claim matrix auditing operational.',
+      id: 'net-3',
+      title: 'System Telemetry Operational',
+      desc: 'Real-time telemetry and claim matrix auditing online.',
       time: '12m ago',
       icon: CheckCircle2,
       color: 'text-green-500'
@@ -112,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
 
               <div className="divide-y divide-[var(--border-main)]/40 max-h-80 overflow-y-auto">
-                {notifications.map((n) => (
+                {dynamicNotifications.map((n) => (
                   <div key={n.id} className="p-3.5 hover:bg-[var(--bg-surface)] transition-colors space-y-1">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center space-x-2">
@@ -130,7 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   onClick={() => {
                     setNotificationsOpen(false);
-                    navigate('/history');
+                    navigate('/agents');
                   }}
                   className="font-mono text-[10px] text-[var(--text-accent)] hover:underline uppercase cursor-pointer"
                 >
