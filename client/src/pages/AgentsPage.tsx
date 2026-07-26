@@ -45,8 +45,36 @@ export const AgentsPage: React.FC = () => {
     `[${new Date().toLocaleTimeString()}] All 5 multi-agent containers ONLINE.`
   ]);
 
-  const [auditLogs, setAuditLogs] = useState<ContradictionAuditItem[]>([]);
-  const [citationAnchors, setCitationAnchors] = useState<CitationAnchorItem[]>([]);
+  const [auditLogs, setAuditLogs] = useState<ContradictionAuditItem[]>([
+    {
+      id: 'audit-1',
+      claimText: 'Commercial deployment projected within 6 months.',
+      reason: 'Contradicted by current IEEE Xplore hardware deployment roadmaps and empirical fault-tolerance metrics.',
+      status: 'UNRESOLVED'
+    }
+  ]);
+  const [citationAnchors, setCitationAnchors] = useState<CitationAnchorItem[]>([
+    {
+      name: 'Google Scholar Peer-Reviewed Papers',
+      match: '95%',
+      url: 'https://scholar.google.com/scholar?q=quantum+cryptography+benchmarks'
+    },
+    {
+      name: 'arXiv Open Academic Repository',
+      match: '96%',
+      url: 'https://arxiv.org/search/?query=quantum+cryptography&searchtype=all'
+    },
+    {
+      name: 'IEEE Xplore Technical Library',
+      match: '92%',
+      url: 'https://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&queryText=post+quantum+lattice'
+    },
+    {
+      name: 'PubMed / NCBI Research Index',
+      match: '94%',
+      url: 'https://pubmed.ncbi.nlm.nih.gov/?term=synthetic+biology+safety'
+    }
+  ]);
 
   const addToast = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
     const id = Math.random().toString(36).slice(2, 9);
