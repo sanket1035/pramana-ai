@@ -59,10 +59,10 @@ export const LoginPage: React.FC = () => {
       setLoading(false);
       console.error('Google Auth Error:', err);
       const msg = err?.message || 'Failed to sign in with Google.';
-      if (msg.includes('auth/popup-closed-by-user')) {
-        setError('Google sign-in window was closed. Click Continue with Google to try again.');
+      if (msg.includes('auth/popup-closed-by-user') || msg.includes('auth/cancelled-popup-request')) {
+        setError(null);
       } else if (msg.includes('auth/unauthorized-domain')) {
-        setError('Domain not authorized in Firebase Console. Please add localhost to Authorized Domains.');
+        setError('Domain not authorized in Firebase Console. Add domain under Firebase Authentication Settings.');
       } else {
         setError(msg);
       }
