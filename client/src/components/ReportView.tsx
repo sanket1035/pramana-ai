@@ -456,10 +456,62 @@ export const ReportView: React.FC<ReportViewProps> = ({ payload }) => {
             </h2>
           </div>
 
-          <div className="prose prose-invert max-w-none text-[var(--text-main)] font-serif leading-relaxed text-base space-y-4">
+          <div className="prose prose-invert max-w-none text-[var(--text-main)] font-sans space-y-6">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
+                h1: ({ children }) => (
+                  <h1 className="mt-8 mb-4 font-serif text-2xl font-bold text-[var(--text-main)] border-b border-[var(--border-main)] pb-2 tracking-tight">
+                    {children}
+                  </h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="mt-8 mb-4 font-serif text-xl font-bold text-[var(--text-accent)] border-b border-[var(--border-main)]/60 pb-2 tracking-tight">
+                    {children}
+                  </h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="mt-6 mb-3 font-serif text-base font-bold text-[var(--text-main)]">
+                    {children}
+                  </h3>
+                ),
+                p: ({ children }) => (
+                  <p className="my-3 font-sans text-sm leading-relaxed text-[var(--text-main)]/90 tracking-normal">
+                    {children}
+                  </p>
+                ),
+                ul: ({ children }) => (
+                  <ul className="my-4 space-y-2 pl-5 list-disc marker:text-[var(--text-accent)] text-sm text-[var(--text-main)]">
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="my-4 space-y-2 pl-5 list-decimal marker:text-[var(--text-accent)] text-sm text-[var(--text-main)]">
+                    {children}
+                  </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="text-sm leading-relaxed">{children}</li>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="my-4 p-4 bg-[var(--bg-main)] border-l-4 border-[var(--text-accent)] rounded-r text-xs font-mono leading-relaxed text-[var(--text-muted)] shadow-inner">
+                    {children}
+                  </blockquote>
+                ),
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--text-accent)] font-semibold underline underline-offset-4 hover:brightness-125 transition-all"
+                  >
+                    {children}
+                  </a>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-[var(--text-main)]">{children}</strong>
+                ),
+                hr: () => <hr className="my-8 border-t border-[var(--border-main)]/80" />,
                 table: ({ children }) => (
                   <div className="overflow-x-auto my-6 border border-[var(--border-main)] rounded bg-[var(--bg-main)] shadow-md">
                     <table className="w-full text-left border-collapse font-mono text-xs">{children}</table>
