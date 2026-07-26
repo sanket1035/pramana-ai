@@ -166,8 +166,12 @@ As quantum computing hardware advances toward fault-tolerance, asymmetric crypto
     return this.sessions.get(id);
   }
 
-  getAllSessions(): ResearchSession[] {
-    return Array.from(this.sessions.values()).sort(
+  getAllSessions(userId?: string): ResearchSession[] {
+    const list = Array.from(this.sessions.values());
+    const filtered = userId && userId !== 'all'
+      ? list.filter(s => s.user_id === userId)
+      : list;
+    return filtered.sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
   }

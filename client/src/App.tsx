@@ -27,6 +27,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppLayout: React.FC = () => {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
   const { isAuthenticated } = useAuth();
 
@@ -42,17 +43,30 @@ const AppLayout: React.FC = () => {
     );
   }
 
+  const toggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setMobileSidebarOpen(!mobileSidebarOpen);
+    } else {
+      setSidebarCollapsed(!sidebarCollapsed);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] font-sans selection:bg-[#ffb77d]/30 selection:text-[#ffb77d]">
-      <Sidebar mobileOpen={mobileSidebarOpen} onCloseMobile={() => setMobileSidebarOpen(false)} />
+      <Sidebar
+        mobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
+        collapsed={sidebarCollapsed}
+      />
       <Navbar
         onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-        onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        onToggleSidebar={toggleSidebar}
+        sidebarCollapsed={sidebarCollapsed}
       />
       <CommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
 
       {/* Main Content Area */}
-      <main className="md:ml-[260px] pt-16 min-h-screen bg-[var(--bg-main)] overflow-y-auto">
+      <main className={`transition-all duration-300 ${sidebarCollapsed ? 'md:ml-[76px]' : 'md:ml-[260px]'} pt-16 min-h-screen bg-[var(--bg-main)] overflow-y-auto`}>
         <Routes>
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/research/new" element={<ProtectedRoute><NewResearchPage /></ProtectedRoute>} />

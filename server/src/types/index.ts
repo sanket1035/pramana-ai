@@ -18,6 +18,9 @@ export interface ResearchSession {
   current_stage: string;
   created_at: string;
   completed_at?: string;
+  depth?: 'SURFACE' | 'DEEP';
+  output_format?: 'EXECUTIVE SUMMARY' | 'FULL DOSSIER' | 'DATA VISUALIZATION';
+  domain?: 'ACADEMIC' | 'JOURNALISM';
 }
 
 export type ClaimStatus = 'verified' | 'contradicted' | 'unverified';

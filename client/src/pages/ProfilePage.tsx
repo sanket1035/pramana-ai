@@ -1,15 +1,26 @@
 import React from 'react';
-import { User as UserIcon, ShieldCheck, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { User as UserIcon, ShieldCheck, Sparkles, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 
 export const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <div className="max-w-[720px] mx-auto p-4 md:p-8 space-y-6 pb-20">
-      <div className="bg-[var(--bg-surface)] border border-[var(--border-main)] p-8 rounded space-y-6 text-center">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-main)] p-8 rounded space-y-6 text-center shadow-xl">
         <div className="w-20 h-20 rounded-full bg-[var(--bg-surface-highest)] border-2 border-[var(--text-accent)] mx-auto flex items-center justify-center">
-          <UserIcon className="w-10 h-10 text-[var(--text-accent)]" />
+          {user?.photoURL ? (
+            <img src={user.photoURL} alt={user.name} className="w-full h-full rounded-full object-cover" />
+          ) : (
+            <UserIcon className="w-10 h-10 text-[var(--text-accent)]" />
+          )}
         </div>
 
         <div className="space-y-1">
@@ -35,7 +46,18 @@ export const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        <div className="pt-4 border-t border-[var(--border-main)] max-w-sm mx-auto">
+          <button
+            onClick={handleSignOut}
+            className="w-full font-mono text-xs py-3 px-6 bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/60 rounded uppercase font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <LogOut className="w-4 h-4 text-red-400" />
+            <span>Sign Out Session</span>
+          </button>
+        </div>
       </div>
     </div>
   );
 };
+

@@ -1,5 +1,6 @@
 import { callGeminiAPI, parseJSONFromText } from '../services/gemini.js';
 import { VerifiedClaimOutput } from './verificationAgent.js';
+import { sanitizeToLiveSearchUrl } from './researchAgent.js';
 
 export interface ContradictionOutput {
   claimText: string;
@@ -41,7 +42,7 @@ Return ONLY valid JSON array matching this schema:
       finalStatus: status,
       contradictionReason: isExaggerated ? 'Contradicted by industry hardware roadmaps and empirical deployment timelines.' : undefined,
       sourceTitle: c.sourceTitle,
-      sourceUrl: c.sourceUrl,
+      sourceUrl: sanitizeToLiveSearchUrl(c.sourceUrl, c.sourceTitle, c.claimText),
       snippet: c.snippet
     };
   };
@@ -49,9 +50,15 @@ Return ONLY valid JSON array matching this schema:
   try {
     const rawText = await callGeminiAPI(prompt, "You are a contradiction detection agent returning JSON.");
     const parsed = parseJSONFromText<ContradictionOutput[]>(rawText, []);
-    if (parsed && parsed.length > 0) return parsed;
+    if (parsed && parsed.length > 0) {
+      return parsed.map(item => ({
+        ...item,
+        sourceUrl: sanitizeToLiveSearchUrl(item.sourceUrl, item.sourceTitle, item.claimText)
+      }));
+    }
     return claims.map(dynamicFallback);
   } catch (err) {
     return claims.map(dynamicFallback);
   }
 }
+

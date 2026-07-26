@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Database, ShieldCheck, RefreshCw, AlertTriangle, BarChart3, BookOpen, FileText, CheckCircle2, Loader2, Sparkles, XCircle } from 'lucide-react';
+import { Database, ShieldCheck, RefreshCw, AlertTriangle, BarChart3, BookOpen, FileText, CheckCircle2, Loader2, FileSpreadsheet } from 'lucide-react';
 import { getResearchProgress } from '../services/api.js';
 import { ResearchSession, AgentLog } from '../types/index.js';
 
@@ -11,33 +11,42 @@ export const ProgressPage: React.FC = () => {
   const [session, setSession] = useState<ResearchSession | null>(null);
   const [logs, setLogs] = useState<AgentLog[]>([]);
   const [status, setStatus] = useState<string>('running');
-  const [progressPercent, setProgressPercent] = useState(25);
+  const [progressPercent, setProgressPercent] = useState(15);
 
   useEffect(() => {
     if (!id) return;
+
+    let isRedirecting = false;
 
     const interval = setInterval(async () => {
       try {
         const data = await getResearchProgress(id);
         setSession(data.session);
         setLogs(data.logs || []);
-        setStatus(data.session?.status || 'running');
+        const currentStatus = data.session?.status || 'running';
+        setStatus(currentStatus);
 
-        const completedCount = (data.logs || []).filter((l: AgentLog) => l.status === 'completed').length;
-        const computedPercent = Math.min(95, Math.max(20, Math.round((completedCount / 6) * 100)));
-        setProgressPercent(computedPercent);
+        const currentLogs: AgentLog[] = data.logs || [];
+        const completedCount = currentLogs.filter((l: AgentLog) => l.status === 'completed').length;
+        const totalPipelineStages = 7; // Research, ClaimExtraction, Verification, Contradiction, Confidence, Citation, ReportGenerator
 
-        if (data.session?.status === 'completed') {
+        if (currentStatus === 'completed' || completedCount >= totalPipelineStages) {
           setProgressPercent(100);
           clearInterval(interval);
-          setTimeout(() => {
-            navigate(`/research/${id}`);
-          }, 1200);
+          if (!isRedirecting) {
+            isRedirecting = true;
+            setTimeout(() => {
+              navigate(`/research/${id}`);
+            }, 1000);
+          }
+        } else {
+          const computedPercent = Math.min(99, Math.max(15, Math.round((completedCount / totalPipelineStages) * 100)));
+          setProgressPercent(computedPercent);
         }
       } catch (err) {
         console.error('Error fetching progress:', err);
       }
-    }, 1500);
+    }, 1200);
 
     return () => clearInterval(interval);
   }, [id, navigate]);
@@ -51,6 +60,16 @@ export const ProgressPage: React.FC = () => {
       logs: [
         '> Found 14 primary sources from arXiv, IEEE Xplore.',
         '> Indexed semantic clusters: [quantum_entropy, byzantine_fault, node_synchrony]'
+      ]
+    },
+    {
+      id: 'ClaimExtraction',
+      title: 'CLAIM EXTRACTION AGENT',
+      icon: FileText,
+      desc: 'Deconstructing unstructured literature into atomic, testable claims.',
+      logs: [
+        '> Isolated 6 atomic claims from literature stream.',
+        '> Normalized terminology and mapped variable assertions.'
       ]
     },
     {
@@ -93,6 +112,16 @@ export const ProgressPage: React.FC = () => {
         '> Deep-linked 14 footnote references.',
         '> Executive Markdown report compilation initiated...'
       ]
+    },
+    {
+      id: 'ReportGenerator',
+      title: 'REPORT GENERATOR AGENT',
+      icon: FileSpreadsheet,
+      desc: 'Synthesizing final executive markdown report with full citation matrix and confidence metrics.',
+      logs: [
+        '> Compiled executive markdown structure.',
+        '> Finalizing citation cross-links and metadata export.'
+      ]
     }
   ];
 
@@ -122,15 +151,23 @@ export const ProgressPage: React.FC = () => {
         <div className="space-y-2">
           <div className="flex justify-between items-center text-xs font-mono">
             <span className="text-[var(--text-muted)] flex items-center gap-2">
-              <Loader2 className="w-3.5 h-3.5 text-[var(--text-accent)] animate-spin" />
-              Processing Active Multi-Agent Pipeline...
+              {progressPercent === 100 || status === 'completed' ? (
+                <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
+              ) : (
+                <Loader2 className="w-3.5 h-3.5 text-[var(--text-accent)] animate-spin" />
+              )}
+              {progressPercent === 100 || status === 'completed'
+                ? 'Multi-Agent Pipeline Execution Complete! Redirecting to report...'
+                : 'Processing Active Multi-Agent Pipeline...'}
             </span>
             <span className="text-[var(--text-accent)] font-bold text-sm">{progressPercent}%</span>
           </div>
 
           <div className="w-full bg-[var(--bg-main)] h-2 rounded-full overflow-hidden relative border border-[var(--border-main)]">
             <div
-              className="bg-[var(--accent-primary)] h-full transition-all duration-700 relative overflow-hidden"
+              className={`h-full transition-all duration-500 relative overflow-hidden ${
+                progressPercent === 100 || status === 'completed' ? 'bg-green-500' : 'bg-[var(--accent-primary)]'
+              }`}
               style={{ width: `${progressPercent}%` }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
@@ -145,8 +182,15 @@ export const ProgressPage: React.FC = () => {
           <div className="absolute left-6 top-8 bottom-8 w-px bg-[var(--border-main)] hidden sm:block" />
 
           {pipelineStages.map((stage, index) => {
-            const isCompleted = logs.some(l => l.agent_name.toLowerCase().includes(stage.id.toLowerCase()) && l.status === 'completed') || progressPercent >= (index + 1) * 20;
-            const isCurrent = !isCompleted && (index === 0 || progressPercent >= index * 20);
+            const hasLogCompleted = logs.some(
+              l => l.agent_name.toLowerCase().includes(stage.id.toLowerCase()) && l.status === 'completed'
+            );
+            const isCompleted = hasLogCompleted || status === 'completed' || progressPercent === 100;
+            const isCurrent = !isCompleted && (
+              logs.some(l => l.agent_name.toLowerCase().includes(stage.id.toLowerCase()) && l.status === 'started') ||
+              session?.current_stage?.toLowerCase().includes(stage.id.toLowerCase()) ||
+              index === Math.floor((progressPercent / 100) * pipelineStages.length)
+            );
 
             return (
               <div key={stage.id} className="flex flex-col sm:flex-row gap-4 sm:gap-6 relative z-10 group">
@@ -243,3 +287,4 @@ export const ProgressPage: React.FC = () => {
     </div>
   );
 };
+

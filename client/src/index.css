@@ -70,3 +70,25 @@ code, pre, .font-mono {
 .animate-shimmer {
   animation: shimmer 2s infinite;
 }
+
+/* Print PDF Styles */
+@media print {
+  aside, header, nav, button, .no-print {
+    display: none !important;
+  }
+  main {
+    margin-left: 0 !important;
+    padding-top: 0 !important;
+    background: #ffffff !important;
+  }
+  body {
+    background-color: #ffffff !important;
+    color: #111111 !important;
+  }
+  .printable-report {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    color: #111111 !important;
+  }
+}

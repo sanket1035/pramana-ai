@@ -6,7 +6,8 @@ const router = Router();
 // GET /api/history - List past research sessions with reports summary
 router.get('/history', (req: Request, res: Response) => {
   try {
-    const sessions = memoryStore.getAllSessions();
+    const userId = req.query.userId ? String(req.query.userId) : undefined;
+    const sessions = memoryStore.getAllSessions(userId);
     const historyList = sessions.map(session => {
       const report = memoryStore.getReport(session.id);
       const claims = memoryStore.getClaims(session.id);

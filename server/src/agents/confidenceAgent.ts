@@ -1,5 +1,6 @@
 import { callGeminiAPI, parseJSONFromText } from '../services/gemini.js';
 import { ContradictionOutput } from './contradictionAgent.js';
+import { sanitizeToLiveSearchUrl } from './researchAgent.js';
 
 export interface ScoredClaim {
   claimText: string;
@@ -48,7 +49,7 @@ Return ONLY valid JSON matching this schema:
 
   try {
     const rawText = await callGeminiAPI(prompt, "You are a confidence scoring agent returning JSON.");
-    return parseJSONFromText<ConfidenceEngineOutput>(rawText, {
+    const parsed = parseJSONFromText<ConfidenceEngineOutput>(rawText, {
       overallScore: Math.round(claims.reduce((acc, c) => acc + (c.finalStatus === 'verified' ? 95 : 25), 0) / claims.length),
       claims: claims.map(c => ({
         claimText: c.claimText,
@@ -59,10 +60,18 @@ Return ONLY valid JSON matching this schema:
           ? 'Supported by primary academic literature and official benchmarks.'
           : 'Low confidence due to conflicting deployment roadmap data.',
         sourceTitle: c.sourceTitle,
-        sourceUrl: c.sourceUrl,
+        sourceUrl: sanitizeToLiveSearchUrl(c.sourceUrl, c.sourceTitle, c.claimText),
         snippet: c.snippet
       }))
     });
+
+    return {
+      ...parsed,
+      claims: parsed.claims.map(c => ({
+        ...c,
+        sourceUrl: sanitizeToLiveSearchUrl(c.sourceUrl, c.sourceTitle, c.claimText)
+      }))
+    };
   } catch (err) {
     return {
       overallScore: 86,
@@ -75,9 +84,10 @@ Return ONLY valid JSON matching this schema:
           ? 'Supported by primary academic literature and official benchmarks.'
           : 'Low confidence due to conflicting deployment roadmap data.',
         sourceTitle: c.sourceTitle,
-        sourceUrl: c.sourceUrl,
+        sourceUrl: sanitizeToLiveSearchUrl(c.sourceUrl, c.sourceTitle, c.claimText),
         snippet: c.snippet
       }))
     };
   }
 }
+

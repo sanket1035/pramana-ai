@@ -2,8 +2,6 @@
 
 # Pramāṇa AI
 
-### Multi-Agent Research & Fact Verification Platform
-
 **Evidence. Intelligence. Trust.**
 
 [![Google Gemini](https://img.shields.io/badge/Google-Gemini%202.5%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)]()
@@ -21,274 +19,95 @@
 
 ## Overview
 
-**Pramāṇa AI** is a next-generation **Multi-Agent Research & Fact Verification Platform** designed to improve the reliability of AI-generated information.
-
-Instead of relying on a single Large Language Model, Pramāṇa AI orchestrates multiple specialized AI agents that collaboratively research topics, verify claims, detect contradictions, assign confidence scores, and generate citation-backed reports.
-
-The platform provides transparent reasoning and trustworthy outputs suitable for research, education, journalism, business intelligence, and knowledge work.
+Pramāṇa AI is an enterprise-grade academic verification platform that uses a 4-agent AI pipeline to eliminate LLM hallucinations, validate factual claims against live academic databases, and generate trust-calibrated research dossiers.
 
 ---
 
-## The Problem
+## Core Features
 
-Modern AI systems can generate convincing responses but frequently suffer from:
+- **4-Agent Autonomous Pipeline**:
+  - **Research Synthesis Agent**: Formulates initial research dossiers.
+  - **Claim Verification Agent**: Extracts atomic claim statements and generates live academic paper search anchors.
+  - **Contradiction Audit Agent**: Cross-checks claims against published hardware roadmaps and empirical benchmarks.
+  - **Confidence Calibration Agent**: Computes weighted reliability scores (0% to 100%) and global session metrics.
 
-- Hallucinated facts
-- Unverified claims
-- Missing citations
-- Contradictory information
-- Low transparency
-- Difficult trust assessment
+- **Dynamic Search Anchors (Zero 404s)**: Dynamically routes citations to live search query portals across Google Scholar, arXiv, IEEE Xplore, PubMed, NIST, and Nature.
+- **Firebase Authentication & User Vaults**: Google OAuth 2.0 & Email/Password Sign Up/In with strict user-scoped history persistence.
+- **Interactive Visual Data Suite**: Real-time Recharts & SVG bar charts displaying claim confidence distribution and domain trust ratios.
+- **Live System Telemetry**: Real-time polling endpoint (`/api/agents/telemetry`) tracking active agent throughput, citation anchors, and contradiction logs.
+- **Multi-Format Export Suite**: Export full verified dossiers directly to Markdown (.md) or clean print-ready PDF (.pdf).
 
-For researchers, students, journalists, and professionals, inaccurate AI responses can lead to misinformation and poor decision-making.
+---
+
+## Technical Stack
+
+- **Frontend**: React 19, Vite 6, TailwindCSS 4, React Router v7, Lucide Icons, Recharts, Mermaid.js, `react-markdown`.
+- **Backend**: Express.js (TypeScript), Node.js, Gemini API (`gemini-2.0-flash`).
+- **Authentication**: Firebase Authentication (Google OAuth + Email/Password).
+- **Environment Management**: Vite dotenv environment variable parsing.
 
 ---
 
-## Our Solution
+## Installation & Setup Guide
 
-Pramāṇa AI introduces a **Multi-Agent Verification Pipeline** where independent AI agents collaborate before presenting the final response.
+### 1. Clone & Install Dependencies
+```bash
+git clone https://github.com/your-username/pramana-ai.git
+cd pramana-ai
 
-Instead of asking:
-
-> "What does the AI think?"
-
-Pramāṇa AI answers:
-
-> "What can be verified with evidence?"
-
-Every generated report contains:
-
-- Verified Claims
-- Confidence Score
-- Supporting Evidence
-- Contradictions
-- Source References
-- Executive Summary
-
----
-## Multi-Agent AI Pipeline
-
-Pramāṇa AI follows a collaborative multi-agent architecture where each AI agent performs a specialized task before producing the final verified report.
-
-```text
-                User Query
-                     │
-                     ▼
-            Research Agent
-                     │
-                     ▼
-          Claim Extraction Agent
-                     │
-                     ▼
-        Fact Verification Agent
-                     │
-                     ▼
-     Contradiction Detection Agent
-                     │
-                     ▼
-         Confidence Scoring Agent
-                     │
-                     ▼
-          Report Generation Agent
-                     │
-                     ▼
-        Citation-backed Final Report
+# Install root, client, and server dependencies
+npm install
+npm install --prefix client
+npm install --prefix server
 ```
 
-Each agent has an independent responsibility, making the system more reliable than traditional single-model AI assistants.
+### 2. Environment Configuration
+Create a `.env` file inside `client/` and in the root directory:
 
----
-
-# Core Features
-
-## Research Agent
-
-- Understands user queries
-- Collects relevant information
-- Identifies important claims
-- Creates structured research context
-
----
-
-## Claim Extraction
-
-- Breaks research into atomic claims
-- Separates facts from opinions
-- Creates verifiable statements
-
----
-
-## Fact Verification
-
-- Verifies every extracted claim
-- Evaluates factual consistency
-- Marks unsupported information
-
----
-
-## Contradiction Detection
-
-- Detects conflicting statements
-- Identifies hallucinations
-- Highlights inconsistent evidence
-
----
-
-## Confidence Scoring
-
-Every verified claim receives a confidence score based on available supporting evidence.
-
-Example:
-
-| Claim | Confidence |
-|--------|------------|
-| AI Act proposed in EU | 96% |
-| Statement without evidence | 38% |
-
----
-
-## Citation Generation
-
-Every verified statement includes supporting references.
-
-Example
-
+```env
+VITE_FIREBASE_API_KEY=AIzaSy...
+VITE_FIREBASE_AUTH_DOMAIN=pramana-ai-af616.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=pramana-ai-af616
+VITE_FIREBASE_STORAGE_BUCKET=pramana-ai-af616.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=1006358447996
+VITE_FIREBASE_APP_ID=1:1006358447996:web:...
 ```
-Claim
 
-Generative AI adoption increased in enterprise software.
+### 3. Run Development Servers
+```bash
+# Terminal 1: Start Express TypeScript Server (Port 5000)
+npm run dev:server
 
-Sources
+# Terminal 2: Start Vite React Client (Port 5173)
+npm run dev:client
+```
 
-• IEEE
-• Nature
-• Official Documentation
+### 4. Build for Production
+```bash
+npm run build --prefix client
+npm run build --prefix server
 ```
 
 ---
 
-## Executive Report
+## Architecture Diagram
 
-The final report contains:
-
-- Executive Summary
-- Research Findings
-- Verified Claims
-- Contradictions
-- Confidence Analysis
-- References
-- Final Verdict
-
----
-
-# Project Workflow
-
-```text
-Research Topic
-
-↓
-
-Research Agent
-
-↓
-
-Claim Extraction
-
-↓
-
-Fact Verification
-
-↓
-
-Contradiction Analysis
-
-↓
-
-Confidence Scoring
-
-↓
-
-Citation Generation
-
-↓
-
-Final Verified Report
 ```
-
----
-
-# Technology Stack
-
-| Category | Technology |
-|-----------|------------|
-| Frontend | React 19 |
-| Build Tool | Vite |
-| Styling | Tailwind CSS |
-| Backend | Node.js |
-| Framework | Express.js |
-| AI | Google Gemini 2.5 Flash |
-| Charts | Recharts |
-| Icons | Lucide React |
-| Animations | Framer Motion |
-| PDF | React PDF |
-| Deployment | Vercel + Render |
-
----
-
-# Project Structure
-
-```text
-Pramana-AI
-
-client/
-│
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── pages/
-│   ├── hooks/
-│   ├── services/
-│   ├── utils/
-│   └── App.jsx
-│
-server/
-│
-├── agents/
-│   ├── researchAgent.js
-│   ├── claimAgent.js
-│   ├── verificationAgent.js
-│   ├── contradictionAgent.js
-│   ├── confidenceAgent.js
-│   └── reportAgent.js
-│
-├── routes/
-├── controllers/
-├── services/
-└── server.js
+[ User Request ]
+       │
+       ▼
+[ React 19 Frontend ] ──(Firebase Auth)──► [ User-Scoped Vault ]
+       │
+       ▼ (Express API)
+[ Multi-Agent Verification Pipeline ]
+ ├── 1. Synthesis Agent ➔ Key Concept Breakdown
+ ├── 2. Verification Agent ➔ Atomic Claim Extraction & Live Academic Links
+ ├── 3. Contradiction Agent ➔ Benchmark & Roadmap Audit
+ └── 4. Confidence Agent ➔ Score Calibration & Telemetry Metrics
+       │
+       ▼
+[ Executive Research Dossier & PDF/MD Export ]
 ```
-
----
-
-# Why Pramāṇa AI?
-
-Unlike conventional AI assistants that rely on a single model response, Pramāṇa AI introduces a structured verification pipeline where multiple specialized AI agents collaborate to improve factual reliability, transparency, and user trust.
-
-The platform focuses on explainable AI by showing how information was researched, verified, and validated before presenting the final response.
-
----
-
-# Roadmap
-
-- [ ] Advanced Multi-Agent Orchestration
-- [ ] Real-time Web Search Integration
-- [ ] PDF & Research Paper Analysis
-- [ ] Collaborative Research Workspace
-- [ ] Knowledge Graph Visualization
-- [ ] Multi-Language Support
-- [ ] Browser Extension
-- [ ] Enterprise API
-- [ ] Research History Sync
-- [ ] AI-powered Source Credibility Analysis
 
 ---
 
@@ -296,7 +115,7 @@ The platform focuses on explainable AI by showing how information was researched
 
 | Name | Role |
 |------|------|
-| **Sanket Chaudhari** | Full Stack Development • AI Engineering • System Architecture  • Frontend Development • UI/UX Design  |
+| **Sanket Chaudhari** | Full Stack Development • AI Engineering • System Architecture • Frontend Development • UI/UX Design |
 | **Purva Chopade** | Documentation |
 
 ---
@@ -314,8 +133,6 @@ See the [LICENSE](LICENSE) file for more information.
 ## Pramāṇa AI
 
 ### Evidence. Intelligence. Trust.
-
-Built with **React**, **Node.js**, **Google Gemini**, **Express**, and **Tailwind CSS**.
 
 Developed by **Sanket Chaudhari**.
 

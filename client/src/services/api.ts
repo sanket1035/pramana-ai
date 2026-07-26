@@ -2,11 +2,25 @@ import { FullReportPayload, HistoryItem } from '../types/index.js';
 
 const API_BASE = '/api';
 
-export async function createResearchSession(query: string): Promise<{ sessionId: string }> {
+export async function createResearchSession(
+  query: string,
+  options?: {
+    depth?: 'SURFACE' | 'DEEP';
+    outputFormat?: 'EXECUTIVE SUMMARY' | 'FULL DOSSIER' | 'DATA VISUALIZATION';
+    domain?: 'ACADEMIC' | 'JOURNALISM' | 'EDUCATION';
+    userId?: string;
+  }
+): Promise<{ sessionId: string }> {
   const res = await fetch(`${API_BASE}/research`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query })
+    body: JSON.stringify({
+      query,
+      userId: options?.userId || 'default-user-id',
+      depth: options?.depth || 'SURFACE',
+      outputFormat: options?.outputFormat || 'EXECUTIVE SUMMARY',
+      domain: options?.domain || 'ACADEMIC'
+    })
   });
 
   if (!res.ok) {
@@ -33,8 +47,9 @@ export async function getResearchReport(sessionId: string): Promise<FullReportPa
   return res.json();
 }
 
-export async function getResearchHistory(): Promise<HistoryItem[]> {
-  const res = await fetch(`${API_BASE}/history`);
+export async function getResearchHistory(userId?: string): Promise<HistoryItem[]> {
+  const url = userId ? `${API_BASE}/history?userId=${encodeURIComponent(userId)}` : `${API_BASE}/history`;
+  const res = await fetch(url);
   if (!res.ok) {
     throw new Error('Failed to fetch history');
   }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Sliders, Cpu, Globe, Scale, BookOpen, Sparkles, RefreshCw } from 'lucide-react';
 import { createResearchSession } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.js';
 
 export const NewResearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -10,6 +11,7 @@ export const NewResearchPage: React.FC = () => {
   const [domain, setDomain] = useState<'ACADEMIC' | 'JOURNALISM'>('ACADEMIC');
   const [loading, setLoading] = useState(false);
   const [aiGenerating, setAiGenerating] = useState(false);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const promptTemplates = [
@@ -56,7 +58,12 @@ export const NewResearchPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const { sessionId } = await createResearchSession(query.trim());
+      const { sessionId } = await createResearchSession(query.trim(), {
+        depth,
+        outputFormat,
+        domain,
+        userId: user?.uid || user?.email
+      });
       navigate(`/research/${sessionId}/progress`);
     } catch (err) {
       console.error('Failed to start research:', err);
@@ -153,7 +160,7 @@ export const NewResearchPage: React.FC = () => {
             {/* Domain Focus */}
             <div className="space-y-2">
               <label className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-widest block">Domain Focus</label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <span
                   onClick={() => setDomain('ACADEMIC')}
                   className={`px-3 py-1.5 text-[10px] font-mono rounded cursor-pointer border transition-colors ${

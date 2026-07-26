@@ -3,16 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { History as HistoryIcon, Search, Trash2, ArrowRight } from 'lucide-react';
 import { getResearchHistory, deleteResearchReport } from '../services/api.js';
 import { HistoryItem } from '../types/index.js';
+import { useAuth } from '../context/AuthContext.js';
 
 export const HistoryPage: React.FC = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const fetchHistory = () => {
     setLoading(true);
-    getResearchHistory()
+    getResearchHistory(user?.uid || user?.email)
       .then(setHistory)
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -20,7 +22,7 @@ export const HistoryPage: React.FC = () => {
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [user]);
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();

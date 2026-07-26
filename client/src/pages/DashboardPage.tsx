@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, CheckCircle2, FileSpreadsheet, PlusCircle, Network, Clock } from 'lucide-react';
 import { createResearchSession, getResearchHistory } from '../services/api.js';
 import { HistoryItem } from '../types/index.js';
+import { useAuth } from '../context/AuthContext.js';
 
 export const DashboardPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [recentResearch, setRecentResearch] = useState<HistoryItem[]>([]);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getResearchHistory()
+    getResearchHistory(user?.uid || user?.email)
       .then(setRecentResearch)
       .catch(console.error);
-  }, []);
+  }, [user]);
 
   const handleStartResearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +24,9 @@ export const DashboardPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const { sessionId } = await createResearchSession(query.trim());
+      const { sessionId } = await createResearchSession(query.trim(), {
+        userId: user?.uid || user?.email
+      });
       navigate(`/research/${sessionId}/progress`);
     } catch (err) {
       console.error('Failed to initiate research:', err);

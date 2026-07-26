@@ -1,55 +1,68 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, Menu, CheckCircle2, AlertTriangle, ShieldCheck, X } from 'lucide-react';
+import { Search, Bell, Menu, CheckCircle2, AlertTriangle, ShieldCheck, X, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 
 interface NavbarProps {
   onOpenCommandPalette: () => void;
-  onToggleMobileSidebar?: () => void;
+  onToggleSidebar: () => void;
+  sidebarCollapsed?: boolean;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onToggleMobileSidebar }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenCommandPalette,
+  onToggleSidebar,
+  sidebarCollapsed = false
+}) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [unread, setUnread] = useState(true);
+
+  const handleLogout = async () => {
+    setUserMenuOpen(false);
+    await logout();
+    navigate('/login');
+  };
 
   const notifications = [
     {
       id: 1,
-      title: 'Quantum Encryption Audit Complete',
-      desc: '6-agent verification pipeline finished with 96% confidence.',
-      time: '10m ago',
+      title: 'Multi-Agent Verification Pipeline Active',
+      desc: '4-agent autonomous pipeline connected to Gemini reasoning cluster.',
+      time: 'Just now',
       icon: CheckCircle2,
       color: 'text-[var(--text-accent)]'
     },
     {
       id: 2,
-      title: 'Contradiction Flagged in Source B',
-      desc: 'Temporal discrepancy detected between 2022 and 2024 benchmarks.',
-      time: '1h ago',
-      icon: AlertTriangle,
-      color: 'text-red-500'
+      title: 'Live Academic Search Anchors Synced',
+      desc: 'Direct query anchors active for arXiv, Google Scholar & IEEE.',
+      time: '5m ago',
+      icon: ShieldCheck,
+      color: 'text-[#38bdf8]'
     },
     {
       id: 3,
       title: 'System Telemetry Synced',
-      desc: 'Gemini 2.0 Flash reasoning cluster running optimally.',
-      time: '3h ago',
-      icon: ShieldCheck,
+      desc: 'Real-time telemetry and claim matrix auditing operational.',
+      time: '12m ago',
+      icon: CheckCircle2,
       color: 'text-green-500'
     }
   ];
 
   return (
-    <header className="fixed top-0 right-0 left-0 md:left-[260px] z-40 bg-[var(--bg-main)]/90 backdrop-blur-md border-b border-[var(--border-main)] h-16 px-4 md:px-8 flex items-center justify-between transition-colors">
-      {/* Left side: Hamburger on mobile + Search trigger */}
+    <header className={`fixed top-0 right-0 left-0 ${sidebarCollapsed ? 'md:left-[76px]' : 'md:left-[260px]'} z-40 bg-[var(--bg-main)]/90 backdrop-blur-md border-b border-[var(--border-main)] h-16 px-4 md:px-8 flex items-center justify-between transition-all duration-300`}>
+      {/* Left side: Hamburger (3 lines) on both desktop & mobile + Search trigger */}
       <div className="flex items-center space-x-3 flex-1">
         <button
-          onClick={onToggleMobileSidebar}
-          className="md:hidden p-2 rounded text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] cursor-pointer"
+          onClick={onToggleSidebar}
+          className="p-2 rounded text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-colors cursor-pointer"
+          title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-5 h-5 text-[var(--text-accent)]" />
         </button>
 
         <div
@@ -128,19 +141,50 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onToggleMo
           )}
         </div>
 
-        {/* User Profile Avatar */}
-        <div
-          onClick={() => navigate('/profile')}
-          className="flex items-center space-x-2 cursor-pointer p-1 rounded hover:bg-[var(--bg-surface)] transition-colors"
-        >
-          <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-highest)] border border-[var(--border-main)] text-[var(--text-accent)] flex items-center justify-center font-serif font-bold text-xs">
-            {user?.name ? user.name.slice(0, 2).toUpperCase() : 'PA'}
+        {/* User Profile Avatar & Dropdown */}
+        <div className="relative">
+          <div
+            onClick={() => setUserMenuOpen(!userMenuOpen)}
+            className="flex items-center space-x-2 cursor-pointer p-1 rounded hover:bg-[var(--bg-surface)] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-highest)] border border-[var(--border-main)] text-[var(--text-accent)] flex items-center justify-center font-serif font-bold text-xs">
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'PA'}
+            </div>
+            <span className="hidden lg:inline-block text-xs font-mono text-[var(--text-main)]">
+              {user?.name || 'Researcher'}
+            </span>
           </div>
-          <span className="hidden lg:inline-block text-xs font-mono text-[var(--text-main)]">
-            {user?.name || 'Researcher'}
-          </span>
+
+          {userMenuOpen && (
+            <div className="absolute right-0 mt-2 w-56 bg-[var(--bg-sidebar)] border border-[var(--border-main)] rounded shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 font-mono text-xs">
+              <div className="p-3 bg-[var(--bg-main)] border-b border-[var(--border-main)] space-y-0.5">
+                <span className="font-bold text-[var(--text-main)] block truncate">{user?.name}</span>
+                <span className="text-[10px] text-[var(--text-muted)] block truncate">{user?.email}</span>
+              </div>
+              <div className="p-1 space-y-1">
+                <button
+                  onClick={() => {
+                    setUserMenuOpen(false);
+                    navigate('/profile');
+                  }}
+                  className="w-full text-left px-3 py-2 text-[var(--text-main)] hover:bg-[var(--bg-surface-high)] rounded flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-[var(--text-accent)]" />
+                  <span>View Account Profile</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-3 py-2 text-red-400 hover:bg-red-950/40 rounded flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out Session</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
   );
 };
+

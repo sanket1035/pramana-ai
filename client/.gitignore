@@ -1,0 +1,10 @@
+# Environment Variables (Contains Secret API Keys)
+.env
+.env.local
+.env.*.local
+
+# Dependencies & Build Files
+node_modules
+dist
+*.log
+.DS_Store
