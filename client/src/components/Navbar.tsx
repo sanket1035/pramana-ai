@@ -106,6 +106,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => {
               setNotificationsOpen(!notificationsOpen);
               setUnread(false);
+              getResearchHistory(user?.uid || user?.email)
+                .then(setUserHistory)
+                .catch(console.error);
             }}
             className="p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-accent)] hover:bg-[var(--bg-surface)] transition-colors relative cursor-pointer"
             title="Notifications"
@@ -134,7 +137,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <div className="divide-y divide-[var(--border-main)]/40 max-h-80 overflow-y-auto">
                 {dynamicNotifications.map((n) => (
-                  <div key={n.id} className="p-3.5 hover:bg-[var(--bg-surface)] transition-colors space-y-1">
+                  <div
+                    key={n.id}
+                    onClick={() => {
+                      setNotificationsOpen(false);
+                      if (n.id === 'latest-res' && userHistory[0]) {
+                        navigate(`/research/${userHistory[0].id}`);
+                      } else {
+                        navigate('/agents');
+                      }
+                    }}
+                    className="p-3.5 hover:bg-[var(--bg-surface)] transition-colors space-y-1 cursor-pointer"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center space-x-2">
                         <n.icon className={`w-4 h-4 ${n.color}`} />
@@ -149,11 +163,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <div className="p-2 border-t border-[var(--border-main)] bg-[var(--bg-main)] text-center">
                 <button
-                  onClick={() => {
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     setNotificationsOpen(false);
                     navigate('/agents');
                   }}
-                  className="font-mono text-[10px] text-[var(--text-accent)] hover:underline uppercase cursor-pointer"
+                  className="w-full font-mono text-[10px] text-[var(--text-accent)] hover:underline uppercase cursor-pointer py-1 block"
                 >
                   View All Activity Logs ↵
                 </button>
