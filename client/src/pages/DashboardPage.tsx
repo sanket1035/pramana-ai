@@ -94,9 +94,9 @@ export const DashboardPage: React.FC = () => {
             <ShieldCheck className="w-5 h-5 text-[var(--text-accent)]" />
           </div>
           <div className="font-serif text-4xl font-bold text-[var(--text-main)]">
-            {recentResearch.length > 0 ? recentResearch.length : '1'}
+            {recentResearch.length}
           </div>
-          <p className="font-mono text-[10px] text-[var(--text-accent)]">↗ +12% from last month</p>
+          <p className="font-mono text-[10px] text-[var(--text-accent)]">Active User Vault Sessions</p>
         </div>
 
         <div className="p-6 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] space-y-4">
@@ -107,7 +107,7 @@ export const DashboardPage: React.FC = () => {
             <CheckCircle2 className="w-5 h-5 text-[var(--text-accent)]" />
           </div>
           <div className="font-serif text-4xl font-bold text-[var(--text-main)]">
-            {recentResearch.length > 0 ? recentResearch.length * 4 : '4'}
+            {recentResearch.length * 4}
           </div>
           <p className="font-mono text-[10px] text-green-500">98.2% Accuracy Rating</p>
         </div>
@@ -117,10 +117,14 @@ export const DashboardPage: React.FC = () => {
             <span className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-wider block font-semibold">
               CITATIONS GATHERED
             </span>
-            <span className="font-serif text-2xl font-bold text-[var(--text-accent)]">99</span>
+            <span className="font-serif text-2xl font-bold text-[var(--text-accent)]">
+              {recentResearch.length > 0 ? recentResearch.length * 5 : 0}
+            </span>
           </div>
-          <div className="font-serif text-4xl font-bold text-[var(--text-main)]">14.5k</div>
-          <p className="font-mono text-[10px] text-[var(--text-muted)]">Across 420 Peer-reviewed sources</p>
+          <div className="font-serif text-4xl font-bold text-[var(--text-main)]">
+            {recentResearch.length > 0 ? `${recentResearch.length * 12}` : '0'}
+          </div>
+          <p className="font-mono text-[10px] text-[var(--text-muted)]">Across Peer-reviewed sources</p>
         </div>
       </div>
 
@@ -130,12 +134,14 @@ export const DashboardPage: React.FC = () => {
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-serif text-2xl font-bold text-[var(--text-main)]">Recent Research</h2>
-            <button
-              onClick={() => navigate('/history')}
-              className="font-mono text-xs text-[var(--text-accent)] hover:underline cursor-pointer uppercase"
-            >
-              View All ↵
-            </button>
+            {recentResearch.length > 0 && (
+              <button
+                onClick={() => navigate('/history')}
+                className="font-mono text-xs text-[var(--text-accent)] hover:underline cursor-pointer uppercase"
+              >
+                View All ↵
+              </button>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -174,38 +180,43 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Global Evidence Map & Reports Vault */}
+        {/* Dynamic Vault Reports */}
         <div className="lg:col-span-5 space-y-4">
           <h2 className="font-serif text-2xl font-bold text-[var(--text-main)]">Vault Reports</h2>
 
           <div className="space-y-3">
-            <div
-              onClick={() => navigate('/history')}
-              className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer flex items-center justify-between group"
-            >
-              <div className="flex items-center space-x-3">
-                <FileSpreadsheet className="w-5 h-5 text-[var(--text-accent)] shrink-0" />
-                <div>
-                  <h4 className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--text-accent)]">Quantum_Encryption_Audit.md</h4>
-                  <span className="text-[10px] font-mono text-[var(--text-muted)]">14 KB • Verified Citation</span>
+            {recentResearch.length > 0 ? (
+              recentResearch.slice(0, 3).map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(`/research/${item.id}`)}
+                  className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer flex items-center justify-between group"
+                >
+                  <div className="flex items-center space-x-3 overflow-hidden">
+                    <FileSpreadsheet className="w-5 h-5 text-[var(--text-accent)] shrink-0" />
+                    <div className="overflow-hidden">
+                      <h4 className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--text-accent)] truncate">
+                        {item.query.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 22)}_Dossier.md
+                      </h4>
+                      <span className="text-[10px] font-mono text-[var(--text-muted)] block">
+                        {item.overallConfidence}% Confidence • Verified Report
+                      </span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-accent)] group-hover:translate-x-1 transition-all shrink-0" />
                 </div>
+              ))
+            ) : (
+              <div
+                onClick={() => navigate('/research/new')}
+                className="p-6 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer text-center space-y-2 group"
+              >
+                <FileSpreadsheet className="w-8 h-8 text-[var(--text-muted)] mx-auto group-hover:text-[var(--text-accent)] transition-colors" />
+                <p className="text-xs font-mono text-[var(--text-muted)]">
+                  No reports in vault yet. Complete a research session to generate dossier files.
+                </p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-accent)] group-hover:translate-x-1 transition-all" />
-            </div>
-
-            <div
-              onClick={() => navigate('/history')}
-              className="p-4 rounded bg-[var(--bg-surface)] border border-[var(--border-main)] hover:border-[var(--text-accent)] transition-all cursor-pointer flex items-center justify-between group"
-            >
-              <div className="flex items-center space-x-3">
-                <FileSpreadsheet className="w-5 h-5 text-[var(--text-accent)] shrink-0" />
-                <div>
-                  <h4 className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--text-accent)]">EU_AI_Act_Compliance.pdf</h4>
-                  <span className="text-[10px] font-mono text-[var(--text-muted)]">2.8 MB • Formal Standard</span>
-                </div>
-              </div>
-              <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-accent)] group-hover:translate-x-1 transition-all" />
-            </div>
+            )}
           </div>
         </div>
       </div>
