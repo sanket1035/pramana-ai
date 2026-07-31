@@ -109,14 +109,6 @@ npm run build --prefix server
 [ Executive Research Dossier & PDF/MD Export ]
 ```
 
----
-
-# Contributors
-
-| Name | Role |
-|------|------|
-| **Sanket Chaudhari** | Full Stack Development • AI Engineering • System Architecture • Frontend Development • UI/UX Design |
-| **Purva Chopade** | Documentation |
 
 ---
 
